@@ -15,6 +15,8 @@ var BSdataPerMonth = require('./routes/financial-statements/balance-sheets/getBS
 var ISdataPerYear = require('./routes/financial-statements/income-statements/getISdataPerYear.js');
 var ISdataPerQuarter = require('./routes/financial-statements/income-statements/getISdataPerQuarter.js');
 var ISdataPerMonth = require('./routes/financial-statements/income-statements/getISdataPerMonth.js');
+// All Assets
+var AllAssetsData = require('./routes/allAssetsData.js');
 
 var app = express();
 
@@ -39,6 +41,8 @@ app.use('/balance-sheets/per-month', BSdataPerMonth);
 app.use('/income-statements/per-year', ISdataPerYear);
 app.use('/income-statements/per-quarter', ISdataPerQuarter);
 app.use('/income-statements/per-month', ISdataPerMonth);
+// All Assets
+app.use('/getAllAssetsData', AllAssetsData);
 
 
 // catch 404 and forward to error handler

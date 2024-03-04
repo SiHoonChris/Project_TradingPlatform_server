@@ -1,0 +1,52 @@
+-- 테이블 생성 --
+CREATE TABLE us_market (
+	NAME     VARCHAR(100)  NOT NULL  DEFAULT 'name',
+    TICKER   VARCHAR(8)    NOT NULL  DEFAULT 'ticker',
+    TREND    VARCHAR(4)    NOT NULL  DEFAULT 'dear',
+    HOLD     VARCHAR(1)    NOT NULL  DEFAULT 'N',
+	PRIMARY KEY(TICKER)
+);
+CREATE TABLE hongkong_market (
+	NAME     VARCHAR(100)  NOT NULL  DEFAULT 'name',
+    TICKER   VARCHAR(8)    NOT NULL  DEFAULT 'ticker',
+    TREND    VARCHAR(4)    NOT NULL  DEFAULT 'dear',
+    HOLD     VARCHAR(1)    NOT NULL  DEFAULT 'N',
+	PRIMARY KEY(TICKER)
+);
+CREATE TABLE shanghai_market (
+	NAME     VARCHAR(100)  NOT NULL  DEFAULT 'name',
+    TICKER   VARCHAR(8)    NOT NULL  DEFAULT 'ticker',
+    TREND    VARCHAR(4)    NOT NULL  DEFAULT 'dear',
+    HOLD     VARCHAR(1)    NOT NULL  DEFAULT 'N',
+	PRIMARY KEY(TICKER)
+);
+CREATE TABLE korea_market (
+	NAME     VARCHAR(100)  NOT NULL  DEFAULT 'name',
+    TICKER   VARCHAR(8)    NOT NULL  DEFAULT 'ticker',
+    TREND    VARCHAR(4)    NOT NULL  DEFAULT 'dear',
+    HOLD     VARCHAR(1)    NOT NULL  DEFAULT 'N',
+	PRIMARY KEY(TICKER)
+);
+CREATE TABLE singapore_market (
+	NAME     VARCHAR(100)  NOT NULL  DEFAULT 'name',
+    TICKER   VARCHAR(8)    NOT NULL  DEFAULT 'ticker',
+    TREND    VARCHAR(4)    NOT NULL  DEFAULT 'dear',
+    HOLD     VARCHAR(1)    NOT NULL  DEFAULT 'N',
+	PRIMARY KEY(TICKER)
+);
+CREATE TABLE crypto_market (
+	NAME     VARCHAR(100)  NOT NULL  DEFAULT 'name',
+    TICKER   VARCHAR(8)    NOT NULL  DEFAULT 'ticker',
+    TREND    VARCHAR(4)    NOT NULL  DEFAULT 'dear',
+    HOLD     VARCHAR(1)    NOT NULL  DEFAULT 'N',
+	PRIMARY KEY(TICKER)
+);
+
+-- 시장별 모든 자산 조회 --
+SELECT * FROM us_market 
+UNION ALL SELECT * FROM korea_market 
+UNION ALL SELECT * FROM shanghai_market 
+UNION ALL SELECT * FROM crypto_market 
+UNION ALL SELECT * FROM hongkong_market 
+UNION ALL SELECT * FROM singapore_market 
+ORDER BY NAME, TICKER ASC;
