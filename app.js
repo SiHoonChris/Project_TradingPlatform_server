@@ -12,11 +12,13 @@ var BSdataPerYear = require('./routes/financial-statements/balance-sheets/getBSd
 var BSdataPerQuarter = require('./routes/financial-statements/balance-sheets/getBSdataPerQuarter');
 var BSdataPerMonth = require('./routes/financial-statements/balance-sheets/getBSdataPerMonth');
 // Income Statements
-var ISdataPerYear = require('./routes/financial-statements/income-statements/getISdataPerYear.js');
-var ISdataPerQuarter = require('./routes/financial-statements/income-statements/getISdataPerQuarter.js');
-var ISdataPerMonth = require('./routes/financial-statements/income-statements/getISdataPerMonth.js');
+var ISdataPerYear = require('./routes/financial-statements/income-statements/getISdataPerYear');
+var ISdataPerQuarter = require('./routes/financial-statements/income-statements/getISdataPerQuarter');
+var ISdataPerMonth = require('./routes/financial-statements/income-statements/getISdataPerMonth');
 // All Assets
-var AllAssetsData = require('./routes/allAssetsData.js');
+var AllAssetsData = require('./routes/allAssetsData');
+// Global Indexes And FX Rate
+var GlobalIndexesData = require('./routes/globalIndexesData');
 
 var app = express();
 
@@ -43,6 +45,8 @@ app.use('/income-statements/per-quarter', ISdataPerQuarter);
 app.use('/income-statements/per-month', ISdataPerMonth);
 // All Assets
 app.use('/getAllAssetsData', AllAssetsData);
+// Global Indexes And FX Rate
+app.use('/getGlobalIndexesData', GlobalIndexesData);
 
 
 // catch 404 and forward to error handler
