@@ -5,7 +5,7 @@ const Query = require('../../db/MySQL/Query/history/forTransactionHistory');
 
 router.get('/', function(req, res) {
   CONN.query(
-    Query['getTransactionHistory'].query, [req.query.PARAM, req.query.PARAM],
+    Query['getTransactionHistory'].query, [`%${req.query.Option}%`, `%${req.query.Option}%`, `${req.query.Input}%`],
     (err, rows, fields) => {
       if(err) console.log(err);
       res.send(rows);

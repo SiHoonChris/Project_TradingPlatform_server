@@ -20,7 +20,6 @@ var AllAssetsData = require('./routes/allAssetsData');
 // Global Indexes And FX Rate
 var GlobalIndexesData = require('./routes/globalIndexesData');
 // Transaction History
-var AllTransactionHistoryData = require('./routes/history/allTransactionHistoryData');
 var TransactionHistoryData = require('./routes/history/transactionHistoryData');
 
 var app = express();
@@ -51,7 +50,6 @@ app.use('/getAllAssetsData', AllAssetsData);
 // Global Indexes And FX Rate
 app.use('/getGlobalIndexesData', GlobalIndexesData);
 // Transaction History
-app.use('/getAllTransactionHistory', AllTransactionHistoryData);
 app.use('/getTransactionHistory', TransactionHistoryData);
 
 // catch 404 and forward to error handler
