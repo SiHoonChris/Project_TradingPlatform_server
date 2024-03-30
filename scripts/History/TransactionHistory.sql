@@ -14,20 +14,6 @@ CREATE TABLE Transaction_History (
     PRIMARY KEY(DATE, Transaction, Detail, Name, Price, FX_Rate, Amount, Deposit, Withdraw, Dividend, Currency)	
 );
 
--- 전체 데이터 조회 --
-SELECT  Date, Transaction, Detail, Name, 
-        Price, Fx_Rate,Amount,
-        Deposit, Withdraw, Dividend,
-	    (CASE WHEN Transaction = 'Trading'  THEN Price * Amount 
-              WHEN Transaction = 'Exchange' THEN Fx_Rate * Amount 
-              WHEN Transaction = 'Banking' AND Detail = 'Deposit'  THEN Deposit
-              WHEN Transaction = 'Banking' AND Detail = 'Withdraw' THEN Withdraw
-			  WHEN Transaction = 'Banking' AND Detail = 'Dividend' THEN Dividend
-		 END) AS Value,
-         Currency
-FROM     Transaction_History 
-ORDER BY Date DESC;
-
 -- 데이터 조회 : Select-box의 Option 값에 따른 (전달값 : 1개) --
 SELECT  Date, Transaction, Detail, Name, 
         Price, Fx_Rate, Amount,
@@ -43,18 +29,19 @@ FROM     Transaction_History
 WHERE    Transaction = ? OR Detail = ?
 ORDER BY Date DESC;
 
--- 데이터 조회 : Select-box의 Option 값과 검색어 에 따른 --
+-- 데이터 조회 (전달값 : Option, Option, Input, DateFrom, DateTo, DateFrom) --
 SELECT  Date, Transaction, Detail, Name, 
         Price, Fx_Rate, Amount,
         Deposit, Withdraw, Dividend,
-	    (CASE WHEN Transaction = 'Trading'  THEN Price * Amount 
+	(CASE WHEN Transaction = 'Trading'  THEN Price * Amount 
               WHEN Transaction = 'Exchange' THEN Fx_Rate * Amount 
               WHEN Transaction = 'Banking' AND Detail = 'Deposit'  THEN Deposit
               WHEN Transaction = 'Banking' AND Detail = 'Withdraw' THEN Withdraw
-			  WHEN Transaction = 'Banking' AND Detail = 'Dividend' THEN Dividend
-		 END) AS Value,
-         Currency
-FROM     Transaction_History 
-WHERE    (Transaction LIKE "%?%" OR Detail LIKE "%?%")
-		 AND Name LIKE "?%"
+	      WHEN Transaction = 'Banking' AND Detail = 'Dividend' THEN Dividend
+	END) AS Value,
+        Currency
+FROM    Transaction_History 
+WHERE   (Transaction LIKE "%?%" OR Detail LIKE "%?%")
+	AND Name LIKE "?%"
+        AND (Date >= ? AND Date <= ?) OR Date LIKE "?%"
 ORDER BY Date DESC;
