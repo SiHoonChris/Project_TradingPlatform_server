@@ -16,7 +16,7 @@ module.exports = {
             FROM     my_balance_sheets \
             WHERE    (YEAR <= YEAR(NOW())-1 AND MONTH = 12) \
                      AND (YEAR >= YEAR(NOW())-2 AND MONTH=12) \
-                     OR (YEAR = YEAR(NOW()) AND MONTH = MONTH(NOW())) \
+                     OR (YEAR = YEAR(NOW()) AND MONTH = MONTH(NOW())-1) \
             ORDER BY YEAR DESC" 
       }, 
     getBSdataPerQuarter:
