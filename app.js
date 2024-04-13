@@ -1,26 +1,36 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
+var createError  = require('http-errors');
+var express      = require('express');
+var path         = require('path');
 var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+var logger       = require('morgan');
+
+const mongoose   = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/trading-platform', {dbName: 'PortfolioDB'})
+  .then(res => console.log('connected to mongodb'))
+  .catch(err => console.error(err));
+
 
 // init
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var indexRouter            = require('./routes/index');
+var usersRouter            = require('./routes/users');
 // Balance Sheets
-var BSdataPerYear = require('./routes/financial-statements/balance-sheets/getBSdataPerYear');
-var BSdataPerQuarter = require('./routes/financial-statements/balance-sheets/getBSdataPerQuarter');
-var BSdataPerMonth = require('./routes/financial-statements/balance-sheets/getBSdataPerMonth');
+var BSdataPerYear          = require('./routes/financial-statements/balance-sheets/getBSdataPerYear');
+var BSdataPerQuarter       = require('./routes/financial-statements/balance-sheets/getBSdataPerQuarter');
+var BSdataPerMonth         = require('./routes/financial-statements/balance-sheets/getBSdataPerMonth');
 // Income Statements
-var ISdataPerYear = require('./routes/financial-statements/income-statements/getISdataPerYear');
-var ISdataPerQuarter = require('./routes/financial-statements/income-statements/getISdataPerQuarter');
-var ISdataPerMonth = require('./routes/financial-statements/income-statements/getISdataPerMonth');
+var ISdataPerYear          = require('./routes/financial-statements/income-statements/getISdataPerYear');
+var ISdataPerQuarter       = require('./routes/financial-statements/income-statements/getISdataPerQuarter');
+var ISdataPerMonth         = require('./routes/financial-statements/income-statements/getISdataPerMonth');
 // All Assets
-var AllAssetsData = require('./routes/allAssetsData');
+var AllAssetsData          = require('./routes/allAssetsData');
 // Global Indexes And FX Rate
-var GlobalIndexesData = require('./routes/globalIndexesData');
+var GlobalIndexesData      = require('./routes/globalIndexesData');
 // Transaction History
 var TransactionHistoryData = require('./routes/history/transactionHistoryData');
+// Portfolios
+var PortfolioData          = require('./routes/portfolio/getPortfolioData');
+var RemovePortfolio        = require('./routes/portfolio/removePortfolio');
+
 
 var app = express();
 
@@ -51,6 +61,11 @@ app.use('/getAllAssetsData', AllAssetsData);
 app.use('/getGlobalIndexesData', GlobalIndexesData);
 // Transaction History
 app.use('/getTransactionHistory', TransactionHistoryData);
+// Portfolio Datas
+app.use('/portfolio/getPortfolioData', PortfolioData);
+// Remove Portfolios
+app.use('/portfolio/removePortfolios', RemovePortfolio);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
