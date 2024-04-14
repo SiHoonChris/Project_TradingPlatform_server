@@ -4,15 +4,8 @@ var path         = require('path');
 var cookieParser = require('cookie-parser');
 var logger       = require('morgan');
 
-const mongoose   = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/trading-platform', {dbName: 'PortfolioDB'})
-  .then(res => console.log('connected to mongodb'))
-  .catch(err => console.error(err));
-
-
 // init
 var indexRouter            = require('./routes/index');
-var usersRouter            = require('./routes/users');
 // Balance Sheets
 var BSdataPerYear          = require('./routes/financial-statements/balance-sheets/getBSdataPerYear');
 var BSdataPerQuarter       = require('./routes/financial-statements/balance-sheets/getBSdataPerQuarter');
@@ -46,7 +39,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // init
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 // Balance Sheets
 app.use('/balance-sheets/per-year', BSdataPerYear);
 app.use('/balance-sheets/per-quarter', BSdataPerQuarter);
