@@ -4,18 +4,22 @@ var Portfolio  = require('../../db/MongoDB/DB/portfolio/forPortfolios');
 const mongoose = require('mongoose');
 
 router.post('/', function(req, res) {
-    mongoose.connect('mongodb://localhost:27017/trading-platform', {dbName: 'PortfolioDB'})
-        .then(connected => {
-            if(Object.values(req.body.params).length !== 0) {
-                for(const e of Object.values(req.body.params)) {
-                    Portfolio.findByIdAndDelete(e);
-                    console.log(e);
+    const paramArr = req.body.params;
+    if(paramArr.length !== 0) {
+        mongoose.connect('mongodb://localhost:27017/trading-platform', {dbName: 'PortfolioDB'})
+            .then(connected => { 
+                for(const i in paramArr) {
+                    Portfolio.findByIdAndDelete(paramArr[i])
+                        .then(result => {
+                            i === paramArr.length-1 &&
+                            mongoose.connection.close()
+                        })
+                        .catch(err => console.log(err));
                 }
-                res.send('Deleted');
-            }
-        })
-        .catch(err => console.error(err))
-        .finally(() => mongoose.connection.close());
+                res.send('Deleted')
+            })
+            .catch(err => console.error(err))
+    }
 });
 
 module.exports = router;
