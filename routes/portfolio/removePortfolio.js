@@ -5,18 +5,13 @@ const mongoose = require('mongoose');
 
 router.post('/', function(req, res) {
     const paramArr = req.body.params;
+    
     if(paramArr.length !== 0) {
         mongoose.connect('mongodb://localhost:27017/trading-platform', {dbName: 'PortfolioDB'})
-            .then(connected => { 
-                for(const i in paramArr) {
-                    Portfolio.findByIdAndDelete(paramArr[i])
-                        .then(result => {
-                            i === paramArr.length-1 &&
-                            mongoose.connection.close()
-                        })
-                        .catch(err => console.log(err));
-                }
-                res.send('Deleted')
+            .then(connected => Promise.all(paramArr.map(id => Portfolio.findByIdAndDelete(id))))
+            .then(finished => {
+                mongoose.connection.close();
+                res.send('Deleted');
             })
             .catch(err => console.error(err))
     }
