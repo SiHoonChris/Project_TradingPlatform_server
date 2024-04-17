@@ -23,6 +23,7 @@ var TransactionHistoryData = require('./routes/history/transactionHistoryData');
 // Portfolios
 var PortfolioData          = require('./routes/portfolio/getPortfolioData');
 var RemovePortfolio        = require('./routes/portfolio/removePortfolio');
+var MakeNewPortfolio       = require('./routes/portfolio/makeNewPortfolio');
 
 
 var app = express();
@@ -57,6 +58,8 @@ app.use('/getTransactionHistory', TransactionHistoryData);
 app.use('/portfolio/getPortfolioData', PortfolioData);
 // Remove Portfolios
 app.use('/portfolio/removePortfolios', RemovePortfolio);
+// Make New Portfolio
+app.use('/portfolio/makeNewPortfolio', MakeNewPortfolio);
 
 
 // catch 404 and forward to error handler
