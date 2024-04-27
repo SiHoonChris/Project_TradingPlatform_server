@@ -24,6 +24,8 @@ var TransactionHistoryData = require('./routes/history/transactionHistoryData');
 var PortfolioData          = require('./routes/portfolio/getPortfolioData');
 var RemovePortfolio        = require('./routes/portfolio/removePortfolio');
 var MakeNewPortfolio       = require('./routes/portfolio/makeNewPortfolio');
+// Trade
+var HistoricalPriceData    = require('./routes/trade/getHistoricalPriceData');
 
 
 var app = express();
@@ -60,7 +62,8 @@ app.use('/portfolio/getPortfolioData', PortfolioData);
 app.use('/portfolio/removePortfolios', RemovePortfolio);
 // Make New Portfolio
 app.use('/portfolio/makeNewPortfolio', MakeNewPortfolio);
-
+// get Historical Price Data
+app.use('/trade/getHistoricalPriceData', HistoricalPriceData);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
