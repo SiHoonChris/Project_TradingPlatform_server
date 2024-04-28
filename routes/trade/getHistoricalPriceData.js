@@ -12,7 +12,7 @@ const tradeSchema = new mongoose.Schema({
 router.get('/', function(req, res) {
     const Trade = mongoose.model('HistoricalPriceData', tradeSchema, req.query.TICKER);
 
-    mongoose.connect('mongodb://localhost:27017/trading-platform', {dbName: 'UsMarket'}) // dbName 동적 할당
+    mongoose.connect('mongodb://localhost:27017/trading-platform', {dbName: `${req.query.MARKET}Market`})
         .then(connected => {
             Trade.find({})
                 .then(resultData => res.send(resultData))
