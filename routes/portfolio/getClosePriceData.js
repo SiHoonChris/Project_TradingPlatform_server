@@ -14,7 +14,7 @@ router.get('/', function(req, res) {
 
     mongoose.connect('mongodb://localhost:27017/trading-platform', {dbName: `${req.query.MARKET}Market`})
         .then(connected => {
-            PriceData.findOne({})
+            PriceData.find().sort({Date: -1}).limit(1)
                 .then(resData => res.send(resData))
                 .catch(err => console.log(err))
                 .finally(() => mongoose.connection.close());
