@@ -4,9 +4,20 @@ var Portfolio  = require('../../db/MongoDB/DB/portfolio/forPortfolios');
 const mongoose = require('mongoose');
 
 router.post('/', function(req, res) {
-    const paramObj = req.body.params;
-    console.log(paramObj);
+    console.log(req.body.params);
 
+    /* 1. 데이터 가공 : 차트 생성을 위한 데이터 추가 */
+    let paramObj = req.body.params;
+    paramObj.CHART_DATA = {};
+
+    for(const E of paramObj.ASSETS) {
+        paramObj.CHART_DATA[E] 
+        = paramObj.DATAS[E].FXRATE * paramObj.DATAS[E].PRICE * paramObj.DATAS[E].AMOUNT;
+    }
+
+    console.log(paramObj);
+    
+    /* 2. DB로 데이터 전송 */
     mongoose.connect('mongodb://localhost:27017/trading-platform', {dbName: 'PortfolioDB'})
         .then(connected => {
             Portfolio.create(paramObj)
