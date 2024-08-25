@@ -21,10 +21,11 @@ var GlobalIndexesData      = require('./routes/globalIndexesData');
 // Transaction History
 var TransactionHistoryData = require('./routes/history/transactionHistoryData');
 // Portfolios
-var PortfolioData          = require('./routes/portfolio/getPortfolioData');
-var RemovePortfolio        = require('./routes/portfolio/removePortfolio');
-var GetClosePriceData      = require('./routes/portfolio/getClosePriceData');
-var MakeNewPortfolio       = require('./routes/portfolio/makeNewPortfolio');
+var PortfolioData            = require('./routes/portfolio/getPortfolioData');
+var RemovePortfolio          = require('./routes/portfolio/removePortfolio');
+var GetClosePriceData        = require('./routes/portfolio/getClosePriceData');
+var GetClosePriceDataForEval = require('./routes/portfolio/getClosePriceDataForEval');
+var MakeNewPortfolio         = require('./routes/portfolio/makeNewPortfolio');
 // Trade
 var HistoricalPriceData    = require('./routes/trade/getHistoricalPriceData');
 
@@ -63,6 +64,8 @@ app.use('/portfolio/getPortfolioData', PortfolioData);
 app.use('/portfolio/removePortfolios', RemovePortfolio);
 // Get The Latest Close-Price of Assets, for Adding New Asset In New Portfolio
 app.use('/portfolio/addAsset', GetClosePriceData);
+// Get The Latest Close-Prices of Assets, for Evaluating Portfolio's current rate of return
+app.use('/portfolio/getCurrentPrices', GetClosePriceDataForEval);
 // Make New Portfolio
 app.use('/portfolio/makeNewPortfolio', MakeNewPortfolio);
 // get Historical Price Data
