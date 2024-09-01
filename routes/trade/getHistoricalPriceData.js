@@ -9,12 +9,12 @@ const tradeSchema = new mongoose.Schema({
     Close: Number
 });
 
-router.get('/', function(req, res) { // 데이터 가져올 때 오름차순으로 sort해서 가져오기!! -> 이 코드 수정해라!!!
+router.get('/', function(req, res) { 
     const Trade = mongoose.model('HistoricalPriceData', tradeSchema, req.query.TICKER);
 
     mongoose.connect('mongodb://localhost:27017/trading-platform', {dbName: `${req.query.MARKET}Market`})
         .then(connected => {
-            Trade.find({})
+            Trade.find({}).sort({Date: 1})
                 .then(resultData => res.send(resultData))
                 .catch(err => console.log(err))
                 .finally(() => mongoose.connection.close());
