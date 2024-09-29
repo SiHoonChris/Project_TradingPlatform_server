@@ -9,9 +9,9 @@ module.exports = {
                       f.CNY_KRW AS "CNY/KRW" , \
                       f.HKD_KRW AS "HKD/KRW" , \
                       f.SGD_KRW AS "SGD/KRW" , \
-                      b.Korea   AS "Basis Rate (KO)" , \
-                      b.Us      AS "Basis Rate (US)" , \
-                      b.Japan   AS "Basis Rate (JP)" ,  \
+                      b.Korea   AS "Base Rate (KO)" , \
+                      b.Us      AS "Base Rate (US)" , \
+                      b.Japan   AS "Base Rate (JP)" ,  \
                       c.Gold , \
                       c.Silver , \
                       c.Copper , \
