@@ -1,20 +1,35 @@
 module.exports = {
-    getTransactionHistory:
+  getTransactionHistoryDataForChart:
       { query:
-            `SELECT   Date, Transaction, Detail, Name, 
-                      Price, Fx_Rate, Amount,
-                      Deposit, Withdraw, Dividend,
-	                (CASE WHEN Transaction = 'Trading'  THEN Price * Amount 
-                            WHEN Transaction = 'Exchange' THEN Fx_Rate * Amount 
-                            WHEN Transaction = 'Banking' AND Detail = 'Deposit'  THEN Deposit
-                            WHEN Transaction = 'Banking' AND Detail = 'Withdraw' THEN Withdraw
-			          WHEN Transaction = 'Banking' AND Detail = 'Dividend' THEN Dividend
-		          END) AS Value,
-                      Currency
+            `SELECT   Date, Expense 
+               FROM   Transaction_History 
+              WHERE   (Transaction LIKE ? OR Detail LIKE ?) 
+                      AND (Date >= ? AND Date <= ?) OR Date LIKE ? 
+           ORDER BY   Date ASC`
+      },
+  getTransactionHistoryDataForTable:
+      { query:
+            `SELECT   Date, 
+                      Detail AS Transaction, 
+                      Name, 
+                      Price, 
+                      Fx_Rate AS FX, 
+                      Amount,
+                      Deposit, 
+                      Withdraw, 
+                      Dividend,
+                      Currency,
+	                (CASE WHEN Currency = 'KRW' THEN 1    * Expense  
+                            WHEN Currency = 'USD' THEN 1200 * Expense 
+                            WHEN Currency = 'HKD' THEN 180  * Expense 
+                            WHEN Currency = 'CNY' THEN 200  * Expense 
+	                      WHEN Currency = 'SGD' THEN 900  * Expense 
+	                 END) AS Expense 
                FROM   Transaction_History 
               WHERE   (Transaction LIKE ? OR Detail LIKE ?)
-		          AND Name LIKE ?
-                      AND (Date >= ? AND Date <= ?) OR Date LIKE "?%" 
-            ORDER BY  Date DESC`
+                      AND (Expense >= ? AND Expense <= ?) 
+                      AND (Date >= ? AND Date <= ?) OR Date LIKE ?
+           ORDER BY   Date ASC`
       }
+
 }

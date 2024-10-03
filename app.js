@@ -19,16 +19,17 @@ var AllAssetsData          = require('./routes/allAssetsData');
 // Global Indexes And FX Rate
 var GlobalIndexesData      = require('./routes/globalIndexesData');
 // Transaction History
-var TransactionHistoryData = require('./routes/history/transactionHistoryData');
+var TransactionHistoryDataForChart = require('./routes/history/getTransactionHistoryDataForChart');
+var TransactionHistoryDataForTable = require('./routes/history/getTransactionHistoryDataForTable');
 // Portfolios
 var PortfolioData            = require('./routes/portfolio/getPortfolioData');
 var RemovePortfolio          = require('./routes/portfolio/removePortfolio');
 var GetClosePriceData        = require('./routes/portfolio/getClosePriceData');
 var GetClosePriceDataForEval = require('./routes/portfolio/getClosePriceDataForEval');
 var MakeNewPortfolio         = require('./routes/portfolio/makeNewPortfolio');
+
 // Trade
 var HistoricalPriceData    = require('./routes/trade/getHistoricalPriceData');
-
 
 var app = express();
 
@@ -52,12 +53,17 @@ app.use('/balance-sheets/per-month', BSdataPerMonth);
 app.use('/income-statements/per-year', ISdataPerYear);
 app.use('/income-statements/per-quarter', ISdataPerQuarter);
 app.use('/income-statements/per-month', ISdataPerMonth);
+
 // All Assets
 app.use('/getAllAssetsData', AllAssetsData);
 // Global Indexes And FX Rate
 app.use('/getGlobalIndexesData', GlobalIndexesData);
-// Transaction History
-app.use('/getTransactionHistory', TransactionHistoryData);
+
+// Get Transaction History For Creating Scatterplot Chart
+app.use('/getTransactionHistoryDataForChart', TransactionHistoryDataForChart);
+// Get Transaction History After Brushing on the Scatterplot Chart
+app.use('/getTransactionHistoryDataForTable', TransactionHistoryDataForTable);
+
 // Portfolio Datas
 app.use('/portfolio/getPortfolioData', PortfolioData);
 // Remove Portfolios
