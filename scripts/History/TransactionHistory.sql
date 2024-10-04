@@ -4,6 +4,8 @@
         : 데이터 조회(Scatterplot Chart 생성)
  * 3) getTransactionHistoryDataForTable 
         : 데이터 조회(Scatterplot Chart 브러쉬에 따른 테이블 생성) 
+ * 4) getExpenseSumForTable
+        : 3)에서 조회된 Expense의 Sum 계산(테이블 생성에 따른 출력)
  */
 
 /* 1) 테이블 */
@@ -89,3 +91,35 @@ WHERE   (Transaction LIKE "%Trading%" OR Detail LIKE "%Trading%")
         AND (Date >= '2023-05-01' AND Date <= '2023-06-01') OR Date LIKE '2023-05-01%'
 ORDER BY Date ASC;
 /* 3) */
+
+/* 4) getExpenseSumForTable */
+-- Params : Transaction(Detail), ExpenseMin, ExpenseMax, DateFrom, DateTo
+-- Select : SUM(Expense)
+SELECT  SUM(a.Expense) AS expense_sum
+FROM    ( 
+          SELECT  (CASE WHEN Currency = 'KRW' THEN 1    * Expense  
+                        WHEN Currency = 'USD' THEN 1200 * Expense 
+                        WHEN Currency = 'HKD' THEN 180  * Expense 
+                        WHEN Currency = 'CNY' THEN 200  * Expense 
+	                WHEN Currency = 'SGD' THEN 900  * Expense 
+		   END) AS Expense
+	    FROM  Transaction_History 
+	   WHERE  (Transaction LIKE ? OR Detail LIKE ?)
+		   AND (Expense >= ? AND Expense <= ?) 
+		   AND (Date >= ? AND Date <= ?) OR Date LIKE ?
+        ) a;
+-- Example)
+SELECT  SUM(a.Expense) AS expense_sum
+FROM    ( 
+          SELECT  (CASE WHEN Currency = 'KRW' THEN 1    * Expense  
+                        WHEN Currency = 'USD' THEN 1200 * Expense 
+                        WHEN Currency = 'HKD' THEN 180  * Expense 
+                        WHEN Currency = 'CNY' THEN 200  * Expense 
+	                WHEN Currency = 'SGD' THEN 900  * Expense 
+		   END) AS Expense
+	    FROM  Transaction_History 
+	   WHERE  (Transaction LIKE "%%" OR Detail LIKE "%%")
+		   AND (Expense >= 0 AND Expense <= 10000) 
+		   AND (Date >= '2023-05-01' AND Date <= '2023-06-01') OR Date LIKE '2023-05-01%'
+        ) a;
+/* 4) */

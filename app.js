@@ -21,6 +21,7 @@ var GlobalIndexesData      = require('./routes/globalIndexesData');
 // Transaction History
 var TransactionHistoryDataForChart = require('./routes/history/getTransactionHistoryDataForChart');
 var TransactionHistoryDataForTable = require('./routes/history/getTransactionHistoryDataForTable');
+var ExpenseSumForTable             = require('./routes/history/getExpenseSumForTable');
 // Portfolios
 var PortfolioData            = require('./routes/portfolio/getPortfolioData');
 var RemovePortfolio          = require('./routes/portfolio/removePortfolio');
@@ -63,6 +64,8 @@ app.use('/getGlobalIndexesData', GlobalIndexesData);
 app.use('/getTransactionHistoryDataForChart', TransactionHistoryDataForChart);
 // Get Transaction History After Brushing on the Scatterplot Chart
 app.use('/getTransactionHistoryDataForTable', TransactionHistoryDataForTable);
+// Get Expense Sum As The Table has been created
+app.use('/getExpenseSumForTable', ExpenseSumForTable);
 
 // Portfolio Datas
 app.use('/portfolio/getPortfolioData', PortfolioData);
