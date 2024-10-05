@@ -34,13 +34,13 @@ ALTER TABLE Transaction_History ADD COLUMN Expense DECIMAL(16, 4) NOT NULL DEFAU
   SELECT   Date, Expense 
     FROM   Transaction_History 
    WHERE   (Transaction LIKE %?% OR Detail LIKE %?%)
-           AND (Date >= ? AND Date <= ?) OR Date LIKE ?%
+           AND ((Date >= ? AND Date <= ?) OR Date LIKE ?%)
 ORDER BY   Date ASC;
 -- Example)
   SELECT   Date, Expense 
     FROM   Transaction_History 
    WHERE   (Transaction LIKE "%%" OR Detail LIKE "%%")
-           AND (Date >= "2023.05.01" AND Date <= "2023.05.31") OR Date LIKE "2023-05-31%"
+           AND ((Date >= "2023-05-01" AND Date <= "2023-05-31") OR Date LIKE "2023-05-31%")
 ORDER BY   Date ASC;
 /* 2) */
 
@@ -66,7 +66,7 @@ SELECT  Date,
 FROM    Transaction_History 
 WHERE   (Transaction LIKE %?% OR Detail LIKE %?%)
         AND (Expense >= ? AND Expense <= ?) 
-        AND (Date >= ? AND Date <= ?) OR Date LIKE ?%
+        AND (Date >= ? AND Date <= ?)
 ORDER BY Date ASC;
 -- Example)
 SELECT  Date, 
@@ -88,7 +88,7 @@ SELECT  Date,
 FROM    Transaction_History 
 WHERE   (Transaction LIKE "%Trading%" OR Detail LIKE "%Trading%")
         AND (Expense >= 0 AND Expense <= 0) 
-        AND (Date >= '2023-05-01' AND Date <= '2023-06-01') OR Date LIKE '2023-05-01%'
+        AND (Date >= '2023-05-01' AND Date <= '2023-06-01')
 ORDER BY Date ASC;
 /* 3) */
 
@@ -106,7 +106,7 @@ FROM    (
 	    FROM  Transaction_History 
 	   WHERE  (Transaction LIKE ? OR Detail LIKE ?)
 		   AND (Expense >= ? AND Expense <= ?) 
-		   AND (Date >= ? AND Date <= ?) OR Date LIKE ?
+		   AND (Date >= ? AND Date <= ?)
         ) a;
 -- Example)
 SELECT  SUM(a.Expense) AS expense_sum
@@ -120,6 +120,6 @@ FROM    (
 	    FROM  Transaction_History 
 	   WHERE  (Transaction LIKE "%%" OR Detail LIKE "%%")
 		   AND (Expense >= 0 AND Expense <= 10000) 
-		   AND (Date >= '2023-05-01' AND Date <= '2023-06-01') OR Date LIKE '2023-05-01%'
+		   AND (Date >= '2023-05-01' AND Date <= '2023-06-01')
         ) a;
 /* 4) */

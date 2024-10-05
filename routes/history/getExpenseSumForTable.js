@@ -14,7 +14,7 @@ router.get('/', function(req, res) {
 
   CONN.query(
     Query['getExpenseSumForTable'].query, 
-    [tD, tD, eMin, eMax, df, dt, `${dt}%`], 
+    [tD, tD, eMin, eMax, df, dt], 
     (err, rows, fields) => {err ? console.log(err) : res.send(rows)}
   );
 });

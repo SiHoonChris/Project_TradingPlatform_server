@@ -12,9 +12,12 @@ router.get('/', function(req, res) {
     `${req.query.DateTo}` 
   ];
 
+  console.log("eMin : "+eMin);
+  console.log("eMax : "+eMax);
+  
   CONN.query(
     Query['getTransactionHistoryDataForTable'].query, 
-    [tD, tD, eMin, eMax, df, dt, `${dt}%`], 
+    [tD, tD, eMin, eMax, df, dt], 
     (err, rows, fields) => {err ? console.log(err) : res.send(rows)}
   );
 });

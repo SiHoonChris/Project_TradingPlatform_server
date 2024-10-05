@@ -4,7 +4,7 @@ module.exports = {
             `SELECT   Date, Expense 
                FROM   Transaction_History 
               WHERE   (Transaction LIKE ? OR Detail LIKE ?) 
-                      AND (Date >= ? AND Date <= ?) OR Date LIKE ? 
+                      AND ((Date >= ? AND Date <= ?) OR Date LIKE ?) 
            ORDER BY   Date ASC`
       },
   getTransactionHistoryDataForTable:
@@ -28,7 +28,7 @@ module.exports = {
                FROM   Transaction_History 
               WHERE   (Transaction LIKE ? OR Detail LIKE ?)
                       AND (Expense >= ? AND Expense <= ?) 
-                      AND (Date >= ? AND Date <= ?) OR Date LIKE ?
+                      AND (Date >= ? AND Date <= ?)
            ORDER BY   Date ASC`
       },
   getExpenseSumForTable:
@@ -44,7 +44,7 @@ module.exports = {
 	                       FROM   Transaction_History 
 	                      WHERE   (Transaction LIKE ? OR Detail LIKE ?)
 		                           AND (Expense >= ? AND Expense <= ?) 
-		                           AND (Date >= ? AND Date <= ?) OR Date LIKE ?
+		                           AND (Date >= ? AND Date <= ?)
                         ) a`
       }
 }
