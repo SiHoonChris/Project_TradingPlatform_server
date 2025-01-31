@@ -4,33 +4,33 @@ var path         = require('path');
 var cookieParser = require('cookie-parser');
 var logger       = require('morgan');
 
-// init
-var indexRouter            = require('./routes/index');
-// Balance Sheets
-var BSdataPerYear          = require('./routes/financial-statements/balance-sheets/getBSdataPerYear');
-var BSdataPerQuarter       = require('./routes/financial-statements/balance-sheets/getBSdataPerQuarter');
-var BSdataPerMonth         = require('./routes/financial-statements/balance-sheets/getBSdataPerMonth');
-// Income Statements
-var ISdataPerYear          = require('./routes/financial-statements/income-statements/getISdataPerYear');
-var ISdataPerQuarter       = require('./routes/financial-statements/income-statements/getISdataPerQuarter');
-var ISdataPerMonth         = require('./routes/financial-statements/income-statements/getISdataPerMonth');
-// All Assets
-var AllAssetsData          = require('./routes/allAssetsData');
-// Global Indexes And FX Rate
-var GlobalIndexesData      = require('./routes/globalIndexesData');
-// Transaction History
-var TransactionHistoryDataForChart = require('./routes/history/getTransactionHistoryDataForChart');
-var TransactionHistoryDataForTable = require('./routes/history/getTransactionHistoryDataForTable');
-var ExpenseSumForTable             = require('./routes/history/getExpenseSumForTable');
-// Portfolios
-var PortfolioData            = require('./routes/portfolio/getPortfolioData');
-var RemovePortfolio          = require('./routes/portfolio/removePortfolio');
-var GetClosePriceData        = require('./routes/portfolio/getClosePriceData');
-var GetClosePriceDataForEval = require('./routes/portfolio/getClosePriceDataForEval');
-var MakeNewPortfolio         = require('./routes/portfolio/makeNewPortfolio');
+var indexRouter = require('./routes/index'); // init
+var GetWatchList = require('./routes/watchList_route'); // [ Home ] Watch-List
+var GetFxList = require('./routes/fxList_route'); // [ Home ] Fx-List
+var GetPortfolioData = require('./routes/inPortfolio_route'); // [ Home ] In-Portfolio
 
+/* 아래는 수정 필요 */
+// Balance Sheets
+var BSdataPerYear = require('./routes/financial-statements/balance-sheets/getBSdataPerYear');
+var BSdataPerQuarter = require('./routes/financial-statements/balance-sheets/getBSdataPerQuarter');
+var BSdataPerMonth = require('./routes/financial-statements/balance-sheets/getBSdataPerMonth');
+// Income Statements
+var ISdataPerYear = require('./routes/financial-statements/income-statements/getISdataPerYear');
+var ISdataPerQuarter = require('./routes/financial-statements/income-statements/getISdataPerQuarter');
+var ISdataPerMonth = require('./routes/financial-statements/income-statements/getISdataPerMonth');
+// Transaction History
+var TransactionHistoryDataForChart = require('./routes/history/getTransactionHistoryDataForChart'); /* TransactionHistory.sql */
+var TransactionHistoryDataForTable = require('./routes/history/getTransactionHistoryDataForTable'); /* TransactionHistory.sql */
+var ExpenseSumForTable = require('./routes/history/getExpenseSumForTable'); /* TransactionHistory.sql */
+// Portfolios 포트폴리오를 새롭게 만들거나 수정하는 작업은 없을 것. 아래 코드 삭제 필요
+var PortfolioData = require('./routes/portfolio/getPortfolioData');
+var RemovePortfolio = require('./routes/portfolio/removePortfolio');
+var GetClosePriceData = require('./routes/portfolio/getClosePriceData');
+var GetClosePriceDataForEval = require('./routes/portfolio/getClosePriceDataForEval');
+var MakeNewPortfolio = require('./routes/portfolio/makeNewPortfolio');
 // Trade
-var HistoricalPriceData    = require('./routes/trade/getHistoricalPriceData');
+var HistoricalPriceData = require('./routes/trade/getHistoricalPriceData');
+
 
 var app = express();
 
@@ -44,8 +44,13 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// init
-app.use('/', indexRouter);
+app.use('/', indexRouter); // init
+app.use('/getWatchList', GetWatchList); // [ Home ] Watch-List
+app.use('/getFxList', GetFxList); // [ Home ] FX-List
+app.use('/getPortfolioData', GetPortfolioData); // [ Home ] In-Portfolio
+
+
+/* 아래는 수정 필요 */
 // Balance Sheets
 app.use('/balance-sheets/per-year', BSdataPerYear);
 app.use('/balance-sheets/per-quarter', BSdataPerQuarter);
@@ -54,11 +59,6 @@ app.use('/balance-sheets/per-month', BSdataPerMonth);
 app.use('/income-statements/per-year', ISdataPerYear);
 app.use('/income-statements/per-quarter', ISdataPerQuarter);
 app.use('/income-statements/per-month', ISdataPerMonth);
-
-// All Assets
-app.use('/getAllAssetsData', AllAssetsData);
-// Global Indexes And FX Rate
-app.use('/getGlobalIndexesData', GlobalIndexesData);
 
 // Get Transaction History For Creating Scatterplot Chart
 app.use('/getTransactionHistoryDataForChart', TransactionHistoryDataForChart);
