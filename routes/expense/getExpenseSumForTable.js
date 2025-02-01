@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const CONN = require('../../db/MySQL/Connection');
-const Query = require('../../db/MySQL/Query/history/forTransactionHistory');
+const Query = require('../../db/MySQL/Query/expense/TransactionHistory');
 
 router.get('/', function(req, res) {
   let [tD, eMin, eMax, df, dt] = [

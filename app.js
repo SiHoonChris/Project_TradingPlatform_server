@@ -4,10 +4,16 @@ var path         = require('path');
 var cookieParser = require('cookie-parser');
 var logger       = require('morgan');
 
-var indexRouter = require('./routes/index'); // init
-var GetWatchList = require('./routes/watchList_route'); // [ Home ] Watch-List
-var GetFxList = require('./routes/fxList_route'); // [ Home ] Fx-List
-var GetPortfolioData = require('./routes/inPortfolio_route'); // [ Home ] In-Portfolio
+/* init */
+var indexRouter = require('./routes/index');
+/* [ HOME ] */
+var GetWatchList = require('./routes/watchList_route'); // Watch-List
+var GetFxList = require('./routes/fxList_route'); // Fx-List
+var GetPortfolioData = require('./routes/inPortfolio_route'); // In-Portfolio
+/* [ EXPENSE ] */
+var TransactionTypeList = require('./routes/expense/getTransactionTypeList') // Transaction Tyep List (Selectbox)
+var TransactionHistoryDataForChart = require('./routes/expense/getTransactionHistoryDataForChart'); // Scatterplot Chart
+
 
 /* 아래는 수정 필요 */
 // Balance Sheets
@@ -19,9 +25,8 @@ var ISdataPerYear = require('./routes/financial-statements/income-statements/get
 var ISdataPerQuarter = require('./routes/financial-statements/income-statements/getISdataPerQuarter');
 var ISdataPerMonth = require('./routes/financial-statements/income-statements/getISdataPerMonth');
 // Transaction History
-var TransactionHistoryDataForChart = require('./routes/history/getTransactionHistoryDataForChart'); /* TransactionHistory.sql */
-var TransactionHistoryDataForTable = require('./routes/history/getTransactionHistoryDataForTable'); /* TransactionHistory.sql */
-var ExpenseSumForTable = require('./routes/history/getExpenseSumForTable'); /* TransactionHistory.sql */
+var TransactionHistoryDataForTable = require('./routes/expense/getTransactionHistoryDataForTable'); /* TransactionHistory.sql */
+var ExpenseSumForTable = require('./routes/expense/getExpenseSumForTable'); /* TransactionHistory.sql */
 // Portfolios 포트폴리오를 새롭게 만들거나 수정하는 작업은 없을 것. 아래 코드 삭제 필요
 var PortfolioData = require('./routes/portfolio/getPortfolioData');
 var RemovePortfolio = require('./routes/portfolio/removePortfolio');
@@ -30,6 +35,7 @@ var GetClosePriceDataForEval = require('./routes/portfolio/getClosePriceDataForE
 var MakeNewPortfolio = require('./routes/portfolio/makeNewPortfolio');
 // Trade
 var HistoricalPriceData = require('./routes/trade/getHistoricalPriceData');
+
 
 
 var app = express();
@@ -44,10 +50,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter); // init
-app.use('/getWatchList', GetWatchList); // [ Home ] Watch-List
-app.use('/getFxList', GetFxList); // [ Home ] FX-List
-app.use('/getPortfolioData', GetPortfolioData); // [ Home ] In-Portfolio
+/* init */
+app.use('/', indexRouter);
+/* [ HOME ] */
+app.use('/getWatchList', GetWatchList); // Watch-List
+app.use('/getFxList', GetFxList); // FX-List
+app.use('/getPortfolioData', GetPortfolioData); // In-Portfolio
+/* [ EXPENSE ] */
+app.use('/getTransactionTypeList', TransactionTypeList); // Transaction Tyep List (Selectbox)
+app.use('/getTransactionHistoryDataForChart', TransactionHistoryDataForChart); // Scatterplot Chart
 
 
 /* 아래는 수정 필요 */
@@ -60,8 +71,6 @@ app.use('/income-statements/per-year', ISdataPerYear);
 app.use('/income-statements/per-quarter', ISdataPerQuarter);
 app.use('/income-statements/per-month', ISdataPerMonth);
 
-// Get Transaction History For Creating Scatterplot Chart
-app.use('/getTransactionHistoryDataForChart', TransactionHistoryDataForChart);
 // Get Transaction History After Brushing on the Scatterplot Chart
 app.use('/getTransactionHistoryDataForTable', TransactionHistoryDataForTable);
 // Get Expense Sum As The Table has been created
