@@ -38,7 +38,8 @@ module.exports = {
                     when currency = 'HKD' then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180
                     when currency = 'SGD' then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
                     else (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount)
-                end as Expense 
+                end as Expense,
+                'blue' as Color 
             FROM trade_history_stock_foreign
             WHERE total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0
             
@@ -46,7 +47,8 @@ module.exports = {
 
             SELECT 
                 t_date as Date, 
-                (commission + tran_agri_tax + inc_resid_tax) as Expense 
+                (commission + tran_agri_tax + inc_resid_tax) as Expense,
+                'red' as Color 
             FROM trade_history_stock_domestic
             WHERE commission + tran_agri_tax + inc_resid_tax > 0
             
@@ -54,7 +56,8 @@ module.exports = {
             
             SELECT 
 				trade_date as Date,
-                fee as Expense 
+                fee as Expense, 
+                'white' as Color 
 			FROM trade_history_crypto
             
             ORDER BY Date ASC`
