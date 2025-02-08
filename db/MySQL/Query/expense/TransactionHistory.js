@@ -1,4 +1,15 @@
 module.exports = {
+  getTransactionFirstDay: 
+      { query: 
+            `SELECT MIN(dTbl.d) as firstDate 
+            FROM (
+                select trade_date as d from trade_history_crypto
+                union all
+                select t_date as d from trade_history_stock_domestic
+                union all
+                select transaction_date as d from trade_history_stock_foreign
+            ) dTbl`
+      },
   getTransactionTypeList: 
       { query : 
             `SELECT '전체' as transaction_type FROM DUAL

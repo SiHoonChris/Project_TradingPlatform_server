@@ -11,6 +11,7 @@ var GetWatchList = require('./routes/watchList_route'); // Watch-List
 var GetFxList = require('./routes/fxList_route'); // Fx-List
 var GetPortfolioData = require('./routes/inPortfolio_route'); // In-Portfolio
 /* [ EXPENSE ] */
+var TransactionFirstDay = require('./routes/expense/getTransactionFirstDay') // First Date Of Transaction (Selectbox - option)
 var TransactionTypeList = require('./routes/expense/getTransactionTypeList') // Transaction Tyep List (Selectbox)
 var TransactionHistoryDataForChart = require('./routes/expense/getTransactionHistoryDataForChart'); // Scatterplot Chart
 
@@ -57,6 +58,7 @@ app.use('/getWatchList', GetWatchList); // Watch-List
 app.use('/getFxList', GetFxList); // FX-List
 app.use('/getPortfolioData', GetPortfolioData); // In-Portfolio
 /* [ EXPENSE ] */
+app.use('/getTransactionFirstDay', TransactionFirstDay); // First Date Of Transaction (Selectbox - option)
 app.use('/getTransactionTypeList', TransactionTypeList); // Transaction Tyep List (Selectbox)
 app.use('/getTransactionHistoryDataForChart', TransactionHistoryDataForChart); // Scatterplot Chart
 
