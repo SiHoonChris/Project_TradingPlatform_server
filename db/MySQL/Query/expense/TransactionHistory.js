@@ -39,39 +39,56 @@ module.exports = {
             WHERE  fee > 0`
       },
   getTransactionHistoryDataForChart:
-      { query: /* where 조건문 추가 필요 */
-        // WHERE   (Transaction LIKE ? OR Detail LIKE ?) AND ((Date >= ? AND Date <= ?) OR Date LIKE ?) 
+      { query:
             `SELECT 
-                transaction_date as Date, 
-                case
-                    when currency = 'USD' then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
-                    when currency = 'CNY' then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200
-                    when currency = 'HKD' then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180
-                    when currency = 'SGD' then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
-                    else (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount)
-                end as Expense,
-                'blue' as Color 
-            FROM trade_history_stock_foreign
-            WHERE total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0
-            
-            UNION ALL
+                Date, 
+                Expense, 
+                Color
+            FROM (
+                SELECT 
+                    transaction_date as Date, 
+                    case
+                        when currency = 'USD' then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
+                        when currency = 'CNY' then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200
+                        when currency = 'HKD' then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180
+                        when currency = 'SGD' then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
+                        else (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount)
+                    end as Expense,
+                    'blue' as Color 
+                FROM 
+                    trade_history_stock_foreign
+                WHERE 
+                    total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0
+                    AND (transaction_type LIKE ? OR description LIKE ?)
+                
+                UNION ALL
 
-            SELECT 
-                t_date as Date, 
-                (commission + tran_agri_tax + inc_resid_tax) as Expense,
-                'red' as Color 
-            FROM trade_history_stock_domestic
-            WHERE commission + tran_agri_tax + inc_resid_tax > 0
-            
-            UNION ALL
-            
-            SELECT 
-				trade_date as Date,
-                fee as Expense, 
-                'white' as Color 
-			FROM trade_history_crypto
-            
-            ORDER BY Date ASC`
+                SELECT 
+                    t_date as Date, 
+                    (commission + tran_agri_tax + inc_resid_tax) as Expense,
+                    'red' as Color 
+                FROM 
+                    trade_history_stock_domestic
+                WHERE 
+                    commission + tran_agri_tax + inc_resid_tax > 0
+                    AND t_type LIKE ?
+                
+                UNION ALL
+                
+                SELECT 
+                    trade_date as Date,
+                    fee as Expense, 
+                    'white' as Color 
+                FROM 
+                    trade_history_crypto
+                WHERE
+                    fee > 0
+                    AND trade_type LIKE ?
+                
+                ORDER BY Date ASC 
+                ) all_data
+            WHERE 
+                Date BETWEEN ? AND ? `
       },
   getTransactionHistoryDataForTable:
       { query:
