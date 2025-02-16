@@ -14,7 +14,7 @@ var GetPortfolioData = require('./routes/inPortfolio_route'); // In-Portfolio
 var TransactionFirstDay = require('./routes/expense/getTransactionFirstDay') // First Date Of Transaction (Selectbox - option)
 var TransactionTypeList = require('./routes/expense/getTransactionTypeList') // Transaction Tyep List (Selectbox)
 var TransactionHistoryDataForChart = require('./routes/expense/getTransactionHistoryDataForChart'); // Scatterplot Chart
-
+var TransactionHistoryDataForTable = require('./routes/expense/getTransactionHistoryDataForTable'); // Table (Bottom-Left)
 
 /* 아래는 수정 필요 */
 // Balance Sheets
@@ -25,9 +25,6 @@ var BSdataPerMonth = require('./routes/financial-statements/balance-sheets/getBS
 var ISdataPerYear = require('./routes/financial-statements/income-statements/getISdataPerYear');
 var ISdataPerQuarter = require('./routes/financial-statements/income-statements/getISdataPerQuarter');
 var ISdataPerMonth = require('./routes/financial-statements/income-statements/getISdataPerMonth');
-// Transaction History
-var TransactionHistoryDataForTable = require('./routes/expense/getTransactionHistoryDataForTable'); /* TransactionHistory.sql */
-var ExpenseSumForTable = require('./routes/expense/getExpenseSumForTable'); /* TransactionHistory.sql */
 // Portfolios 포트폴리오를 새롭게 만들거나 수정하는 작업은 없을 것. 아래 코드 삭제 필요
 var PortfolioData = require('./routes/portfolio/getPortfolioData');
 var RemovePortfolio = require('./routes/portfolio/removePortfolio');
@@ -61,6 +58,7 @@ app.use('/getPortfolioData', GetPortfolioData); // In-Portfolio
 app.use('/getTransactionFirstDay', TransactionFirstDay); // First Date Of Transaction (Selectbox - option)
 app.use('/getTransactionTypeList', TransactionTypeList); // Transaction Tyep List (Selectbox)
 app.use('/getTransactionHistoryDataForChart', TransactionHistoryDataForChart); // Scatterplot Chart
+app.use('/getTransactionHistoryDataForTable', TransactionHistoryDataForTable); // Table (Bottom-Left)
 
 
 /* 아래는 수정 필요 */
@@ -72,12 +70,6 @@ app.use('/balance-sheets/per-month', BSdataPerMonth);
 app.use('/income-statements/per-year', ISdataPerYear);
 app.use('/income-statements/per-quarter', ISdataPerQuarter);
 app.use('/income-statements/per-month', ISdataPerMonth);
-
-// Get Transaction History After Brushing on the Scatterplot Chart
-app.use('/getTransactionHistoryDataForTable', TransactionHistoryDataForTable);
-// Get Expense Sum As The Table has been created
-app.use('/getExpenseSumForTable', ExpenseSumForTable);
-
 // Portfolio Datas
 app.use('/portfolio/getPortfolioData', PortfolioData);
 // Remove Portfolios
