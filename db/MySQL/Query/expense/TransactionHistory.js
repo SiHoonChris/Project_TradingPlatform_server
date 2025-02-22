@@ -99,14 +99,35 @@ module.exports = {
             FROM (
                 SELECT 
                     transaction_date as Date, 
-                    description as Transaction,  /* 수정 필요 */
-                    case
-                        when currency = 'USD' then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
-                        when currency = 'CNY' then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200
-                        when currency = 'HKD' then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180
-                        when currency = 'SGD' then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
-                        else (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount)
-                    end as Expense
+                    CASE 
+                        WHEN description LIKE '%외화%' AND (description LIKE '%매수%' OR description LIKE '%매도%')
+                            THEN CONCAT(transaction_type, ', ', description, ' (', currency, ', ', unit_price_exchange_rate, currency,'/KRW, ', FORMAT(transaction_amount,0),'원)')
+                        WHEN description NOT LIKE '%외화%' AND (description LIKE '%매수%' OR description LIKE '%매도%')
+                            THEN CONCAT(stock_code, ', ', description, ' (', unit_price_exchange_rate, currency, ' x ', FORMAT(transaction_quantity,0),')')
+                        WHEN description LIKE '%배당%' AND (description LIKE '%입금%' OR description LIKE '%출금%')
+                            THEN CONCAT(stock_code, ', ', description, ' (', 
+                                CASE WHEN currency = 'KRW' 
+                                    THEN FORMAT(transaction_amount,0)
+                                    ELSE transaction_amount_foreign
+                                END,
+                                currency, ')')
+                        WHEN description NOT LIKE '%배당%' AND (description LIKE '%입금%' OR description LIKE '%출금%')
+                            THEN CONCAT(description, ' (', 
+                                CASE WHEN currency = 'KRW' 
+                                    THEN FORMAT(transaction_amount,0)
+                                    ELSE transaction_amount_foreign
+                                END,
+                                currency, ')')
+                        ELSE 
+                            CONCAT(stock_code, ', ', description, ' (', FORMAT(unit_price_exchange_rate,0), currency, ' x ', FORMAT(transaction_quantity,0), ')') 
+                    END as Transaction, 
+                    CASE
+                        WHEN currency = 'USD' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
+                        WHEN currency = 'CNY' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200
+                        WHEN currency = 'HKD' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180
+                        WHEN currency = 'SGD' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
+                        ELSE (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount)
+                    END as Expense
                 FROM 
                     trade_history_stock_foreign
                 WHERE 
@@ -117,13 +138,22 @@ module.exports = {
                 UNION ALL
 
                 SELECT 
-                    t_date as Date, 
-                    t_type as Transaction,  /* 수정 필요 */
+	                t_date as Date, 
+                    CASE 
+                        WHEN t_type LIKE '%입금%' AND t_type LIKE '%배당%'
+                            THEN CONCAT(stock_name, ', 배당 (세전 ', t_amount, '원)')
+                        WHEN (t_type LIKE '%입금%' AND t_type NOT LIKE '%배당%') OR (t_type LIKE '%출금%')
+                            THEN CONCAT('(세전) ', t_amount, '원, ', t_type)
+                        WHEN t_type LIKE '%매수%' OR t_type LIKE '%매도%'
+                            THEN CONCAT(stock_name, ', 매수 (', FORMAT(t_unit_price,0), '원 x ', t_quant, '주)')
+                        ELSE 
+                            CONCAT(stock_name, ', ', t_type, ' (', FORMAT(t_unit_price,0), '원 x ', t_quant, '주)') 
+                    END as Transaction, 
                     (commission + tran_agri_tax + inc_resid_tax) as Expense
                 FROM 
                     trade_history_stock_domestic
                 WHERE 
-                    t_type LIKE ? 
+                    t_type LIKE ?
                     AND 
                     commission + tran_agri_tax + inc_resid_tax BETWEEN ? AND ? 
                             

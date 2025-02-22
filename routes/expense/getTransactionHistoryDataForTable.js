@@ -22,7 +22,12 @@ router.get('/', async function (req, res) {
     let transactionHistoryPromise = new Promise((resolve, reject) => {
       CONN.query(
         Query['getTransactionHistoryDataForTable'].query,
-        [tType, tType, eMin, eMax, tType, eMin, eMax, tType, eMin, eMax, dFrom, dTo],
+        [
+          tType, tType, eMin, eMax, 
+          tType, eMin, eMax,
+          tType, eMin, eMax,
+          dFrom, dTo
+        ],
         (err, rows) => {
           if (err) return reject(err);
           dataForTable.data = rows;
@@ -34,7 +39,11 @@ router.get('/', async function (req, res) {
     let expenseSumPromise = new Promise((resolve, reject) => {
       CONN.query(
         Query['getExpenseSumForTable'].query,
-        [tType, tType, dFrom, dTo, eMin, eMax, tType, dFrom, dTo, eMin, eMax, tType, dFrom, dTo, eMin, eMax],
+        [ 
+          tType, tType, dFrom, dTo, eMin, eMax, 
+          tType, dFrom, dTo, eMin, eMax, 
+          tType, dFrom, dTo, eMin, eMax
+        ],
         (err, rows) => {
           if (err) return reject(err);
           dataForTable.expenseTotal = Number(rows[0]?.expenseTotal || 0); // Handle possible undefined value
