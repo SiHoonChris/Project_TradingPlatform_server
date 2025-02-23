@@ -132,8 +132,13 @@ module.exports = {
                     trade_history_stock_foreign
                 WHERE 
                     (transaction_type LIKE ? OR description LIKE ?)
-                    AND 
-                    total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount BETWEEN ? AND ? 
+                    AND (CASE
+                        WHEN currency = 'USD' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
+                        WHEN currency = 'CNY' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200
+                        WHEN currency = 'HKD' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180
+                        WHEN currency = 'SGD' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
+                        ELSE (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount)
+                    END) BETWEEN ? AND ?
                             
                 UNION ALL
 
@@ -202,8 +207,13 @@ module.exports = {
                     (transaction_type LIKE ? OR description LIKE ?)
                     AND 
                     transaction_date BETWEEN ? AND ?
-                    AND
-                    total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount BETWEEN ? AND ?
+                    AND (CASE
+                        WHEN currency = 'USD' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
+                        WHEN currency = 'CNY' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200
+                        WHEN currency = 'HKD' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180
+                        WHEN currency = 'SGD' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
+                        ELSE (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount)
+                    END) BETWEEN ? AND ?
                             
                 UNION ALL
 
