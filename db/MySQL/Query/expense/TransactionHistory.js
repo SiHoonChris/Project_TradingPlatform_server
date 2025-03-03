@@ -12,31 +12,43 @@ module.exports = {
       },
   getTransactionTypeList: 
       { query : 
-            `SELECT '전체' as transaction_type FROM DUAL
+            `SELECT 
+                distinct
+                (case 
+                    when transaction_type like '%매수%' then '매수'
+                    when transaction_type like '%매도%' then '매도'
+                    when transaction_type like '%배당%' then '배당'
+                    when transaction_type like '%입금%' then '입금'
+                    when transaction_type like '%출금%' and transaction_type != '입출금' then '출금'
+                    else transaction_type
+                end) transaction_type
+            FROM (
+                SELECT '전체' as transaction_type FROM DUAL
 
-            UNION
-            
-            SELECT distinct t_type as transaction_type 
-            FROM    trade_history_stock_domestic 
-            WHERE   commission + tran_agri_tax + inc_resid_tax > 0
+                UNION
+                        
+                SELECT distinct t_type as transaction_type 
+                FROM    trade_history_stock_domestic 
+                WHERE   commission + tran_agri_tax + inc_resid_tax > 0
 
-            UNION
+                UNION
 
-            SELECT distinct transaction_type 
-            FROM   trade_history_stock_foreign 
-            WHERE  total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0
+                SELECT distinct transaction_type 
+                FROM   trade_history_stock_foreign 
+                WHERE  total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0
 
-            UNION 
+                UNION 
 
-            SELECT distinct description as transaction_type 
-            FROM   trade_history_stock_foreign 
-            WHERE  total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0
+                SELECT distinct description as transaction_type 
+                FROM   trade_history_stock_foreign 
+                WHERE  total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0
 
-            UNION 
+                UNION 
 
-            SELECT distinct trade_type as transaction_type 
-            FROM   trade_history_crypto 
-            WHERE  fee > 0`
+                SELECT distinct trade_type as transaction_type 
+                FROM   trade_history_crypto 
+                WHERE  fee > 0
+            ) transaction_type_list`
       },
   getTransactionHistoryDataForChart:
       { query:
@@ -71,8 +83,11 @@ module.exports = {
                     trade_history_stock_domestic
                 WHERE 
                     commission + tran_agri_tax + inc_resid_tax > 0
-                    AND t_type LIKE ?
-                
+                    AND (
+                        (? = '매매' AND (t_type LIKE '%매수%' OR t_type LIKE '%매도%')) 
+                        OR t_type LIKE ?
+                    )
+
                 UNION ALL
                 
                 SELECT 
@@ -83,7 +98,10 @@ module.exports = {
                     trade_history_crypto
                 WHERE
                     fee > 0
-                    AND trade_type LIKE ?
+                    AND (
+                        (? = '매매' AND (trade_type LIKE '%매수%' OR trade_type LIKE '%매도%')) 
+                        OR trade_type LIKE ?
+                    )
                 
                 ORDER BY Date ASC 
                 ) all_data
@@ -139,6 +157,13 @@ module.exports = {
                         WHEN currency = 'SGD' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
                         ELSE (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount)
                     END) BETWEEN ? AND ?
+                    AND (CASE
+                        WHEN currency = 'USD' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
+                        WHEN currency = 'CNY' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200
+                        WHEN currency = 'HKD' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180
+                        WHEN currency = 'SGD' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
+                        ELSE (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount)
+                    END) != 0 
                             
                 UNION ALL
 
@@ -146,11 +171,13 @@ module.exports = {
 	                t_date as Date, 
                     CASE 
                         WHEN t_type LIKE '%입금%' AND t_type LIKE '%배당%'
-                            THEN CONCAT(stock_name, ', 배당 (세전 ', t_amount, '원)')
+                            THEN CONCAT(stock_name, ', 배당 (', t_amount, '원)')
                         WHEN (t_type LIKE '%입금%' AND t_type NOT LIKE '%배당%') OR (t_type LIKE '%출금%')
-                            THEN CONCAT('(세전) ', t_amount, '원, ', t_type)
-                        WHEN t_type LIKE '%매수%' OR t_type LIKE '%매도%'
+                            THEN CONCAT(t_amount, '원, ', t_type)
+                        WHEN t_type LIKE '%매수%' 
                             THEN CONCAT(stock_name, ', 매수 (', FORMAT(t_unit_price,0), '원 x ', t_quant, '주)')
+                        WHEN t_type LIKE '%매도%'
+                            THEN CONCAT(stock_name, ', 매도 (', FORMAT(t_unit_price,0), '원 x ', t_quant, '주)')
                         ELSE 
                             CONCAT(stock_name, ', ', t_type, ' (', FORMAT(t_unit_price,0), '원 x ', t_quant, '주)') 
                     END as Transaction, 
@@ -158,9 +185,14 @@ module.exports = {
                 FROM 
                     trade_history_stock_domestic
                 WHERE 
-                    t_type LIKE ?
+                    (
+                        (? = '매매' AND (t_type LIKE '%매수%' OR t_type LIKE '%매도%')) 
+                        OR t_type LIKE ?
+                    )
                     AND 
                     commission + tran_agri_tax + inc_resid_tax BETWEEN ? AND ? 
+                    AND 
+                    commission + tran_agri_tax + inc_resid_tax != 0 
                             
                 UNION ALL
                             
@@ -176,12 +208,16 @@ module.exports = {
                                     ELSE FORMAT(amount, 4) 
                                 END, ')')
                     END AS Transaction,
-                    FORMAT(fee, 4) as Expense
+                    fee as Expense
                 FROM 
                     trade_history_crypto
                 WHERE
-                    trade_type LIKE ?
+                    (
+                        (? = '매매' AND (trade_type LIKE '%매수%' OR trade_type LIKE '%매도%')) 
+                        OR trade_type LIKE ?
+                    )
                     AND fee BETWEEN ? AND ? 
+                    AND fee != 0 
                             
                 ORDER BY Date ASC 
             ) brushed_area
@@ -222,7 +258,10 @@ module.exports = {
                 FROM 
                     trade_history_stock_domestic
                 WHERE 
-                    t_type LIKE ? 
+                    (
+                        (? = '매매' AND (t_type LIKE '%매수%' OR t_type LIKE '%매도%')) 
+                        OR t_type LIKE ?
+                    )
                     AND 
                     t_date BETWEEN ? AND ? 
                     AND
@@ -235,7 +274,10 @@ module.exports = {
                 FROM 
                     trade_history_crypto
                 WHERE
-                    trade_type LIKE ?
+                    (
+                        (? = '매매' AND (trade_type LIKE '%매수%' OR trade_type LIKE '%매도%')) 
+                        OR trade_type LIKE ?
+                    )
                     AND 
                     trade_date BETWEEN ? AND ? 
                     AND 

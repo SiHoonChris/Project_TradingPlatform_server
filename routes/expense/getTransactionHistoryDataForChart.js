@@ -7,12 +7,10 @@ router.get('/', function(req, res) {
   CONN.query(
     Query['getTransactionHistoryDataForChart'].query, 
     [
-      `%${req.query.Transaction}%`,
-      `%${req.query.Transaction}%`,
-      `%${req.query.Transaction}%`,
-      `%${req.query.Transaction}%`,
-      req.query.DateFrom, 
-      req.query.DateTo
+      `%${req.query.Transaction}%`, `%${req.query.Transaction}%`,
+      req.query.Transaction, `%${req.query.Transaction}%`,
+      req.query.Transaction, `%${req.query.Transaction}%`,
+      req.query.DateFrom, req.query.DateTo
     ],
     (err, rows, fields) => {
       if(err) console.log(err);

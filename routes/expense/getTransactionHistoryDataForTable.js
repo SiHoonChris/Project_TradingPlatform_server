@@ -4,7 +4,8 @@ const CONN = require('../../db/MySQL/Connection');
 const Query = require('../../db/MySQL/Query/expense/TransactionHistory');
 
 router.get('/', async function (req, res) {
-  let [tType, eMin, eMax, dFrom, dTo] = [
+  let [tTypeOrg, tType, eMin, eMax, dFrom, dTo] = [
+    `${req.query.TransactionType}`,
     `%${req.query.TransactionType}%`,
     `${Number(req.query.ExpenseMin)}`,
     `${Number(req.query.ExpenseMax)}`,
@@ -24,8 +25,8 @@ router.get('/', async function (req, res) {
         Query['getTransactionHistoryDataForTable'].query,
         [
           tType, tType, eMin, eMax, 
-          tType, eMin, eMax,
-          tType, eMin, eMax,
+          tTypeOrg, tType, eMin, eMax,
+          tTypeOrg, tType, eMin, eMax,
           dFrom, dTo
         ],
         (err, rows) => {
@@ -41,8 +42,8 @@ router.get('/', async function (req, res) {
         Query['getExpenseSumForTable'].query,
         [ 
           tType, tType, dFrom, dTo, eMin, eMax, 
-          tType, dFrom, dTo, eMin, eMax, 
-          tType, dFrom, dTo, eMin, eMax
+          tTypeOrg, tType, dFrom, dTo, eMin, eMax, 
+          tTypeOrg, tType, dFrom, dTo, eMin, eMax
         ],
         (err, rows) => {
           if (err) return reject(err);
