@@ -71,7 +71,19 @@ module.exports = {
                     trade_history_stock_foreign
                 WHERE 
                     total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0
-                    AND (transaction_type LIKE ? OR description LIKE ?)
+                    AND 
+                    (
+                        (
+                            ? != '배당' 
+                            AND (transaction_type NOT LIKE '%배당%' AND description NOT LIKE '%배당%')
+                            AND (transaction_type LIKE ? OR description LIKE ?)
+                        )
+                        OR 
+                        (
+                            ? = '배당' 
+                            AND (transaction_type LIKE '%배당%' OR description LIKE '%배당%')
+                        )
+                    )
                 
                 UNION ALL
 
@@ -83,9 +95,22 @@ module.exports = {
                     trade_history_stock_domestic
                 WHERE 
                     commission + tran_agri_tax + inc_resid_tax > 0
-                    AND (
-                        (? = '매매' AND (t_type LIKE '%매수%' OR t_type LIKE '%매도%')) 
-                        OR t_type LIKE ?
+                    AND 
+                    ( 
+                        (
+                            ? != '배당' 
+                            AND t_type NOT LIKE '%배당%'
+                            AND (
+                                (? = '매매' AND (t_type LIKE '%매수%' OR t_type LIKE '%매도%')) 
+                                OR (? = '입출금' AND (t_type LIKE '%입금%' OR t_type LIKE '%출금%')) 
+                                OR t_type LIKE ?
+                            )
+                        )
+                        OR 
+                        (
+                            ? = '배당' 
+                            AND t_type LIKE '%배당%'
+                        )
                     )
 
                 UNION ALL
@@ -98,9 +123,22 @@ module.exports = {
                     trade_history_crypto
                 WHERE
                     fee > 0
-                    AND (
-                        (? = '매매' AND (trade_type LIKE '%매수%' OR trade_type LIKE '%매도%')) 
-                        OR trade_type LIKE ?
+                    AND 
+                    ( 
+                        (
+                            ? != '배당' 
+                            AND trade_type NOT LIKE '%배당%'
+                            AND (
+                                (? = '매매' AND (trade_type LIKE '%매수%' OR trade_type LIKE '%매도%')) 
+                                OR (? = '입출금' AND (trade_type LIKE '%입금%' OR trade_type LIKE '%출금%')) 
+                                OR trade_type LIKE ?
+                            )
+                        )
+                        OR 
+                        (
+                            ? = '배당' 
+                            AND trade_type LIKE '%배당%'
+                        )
                     )
                 
                 ORDER BY Date ASC 
@@ -149,7 +187,18 @@ module.exports = {
                 FROM 
                     trade_history_stock_foreign
                 WHERE 
-                    (transaction_type LIKE ? OR description LIKE ?)
+                    (
+                        (
+                            ? != '배당' 
+                            AND (transaction_type NOT LIKE '%배당%' AND description NOT LIKE '%배당%')
+                            AND (transaction_type LIKE ? OR description LIKE ?)
+                        )
+                        OR 
+                        (
+                            ? = '배당' 
+                            AND (transaction_type LIKE '%배당%' OR description LIKE '%배당%')
+                        )
+                    )
                     AND (CASE
                         WHEN currency = 'USD' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
                         WHEN currency = 'CNY' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200
@@ -185,9 +234,21 @@ module.exports = {
                 FROM 
                     trade_history_stock_domestic
                 WHERE 
-                    (
-                        (? = '매매' AND (t_type LIKE '%매수%' OR t_type LIKE '%매도%')) 
-                        OR t_type LIKE ?
+                    ( 
+                        (
+                            ? != '배당' 
+                            AND t_type NOT LIKE '%배당%'
+                            AND (
+                                (? = '매매' AND (t_type LIKE '%매수%' OR t_type LIKE '%매도%')) 
+                                OR (? = '입출금' AND (t_type LIKE '%입금%' OR t_type LIKE '%출금%')) 
+                                OR t_type LIKE ?
+                            )
+                        )
+                        OR 
+                        (
+                            ? = '배당' 
+                            AND t_type LIKE '%배당%'
+                        )
                     )
                     AND 
                     commission + tran_agri_tax + inc_resid_tax BETWEEN ? AND ? 
@@ -212,9 +273,21 @@ module.exports = {
                 FROM 
                     trade_history_crypto
                 WHERE
-                    (
-                        (? = '매매' AND (trade_type LIKE '%매수%' OR trade_type LIKE '%매도%')) 
-                        OR trade_type LIKE ?
+                    ( 
+                        (
+                            ? != '배당' 
+                            AND trade_type NOT LIKE '%배당%'
+                            AND (
+                                (? = '매매' AND (trade_type LIKE '%매수%' OR trade_type LIKE '%매도%')) 
+                                OR (? = '입출금' AND (trade_type LIKE '%입금%' OR trade_type LIKE '%출금%')) 
+                                OR trade_type LIKE ?
+                            )
+                        )
+                        OR 
+                        (
+                            ? = '배당' 
+                            AND trade_type LIKE '%배당%'
+                        )
                     )
                     AND fee BETWEEN ? AND ? 
                     AND fee != 0 
@@ -239,8 +312,19 @@ module.exports = {
                     end as Expense
                 FROM 
                     trade_history_stock_foreign
-                WHERE 
-                    (transaction_type LIKE ? OR description LIKE ?)
+                WHERE  
+                    (
+                        (
+                            ? != '배당' 
+                            AND (transaction_type NOT LIKE '%배당%' AND description NOT LIKE '%배당%')
+                            AND (transaction_type LIKE ? OR description LIKE ?)
+                        )
+                        OR 
+                        (
+                            ? = '배당' 
+                            AND (transaction_type LIKE '%배당%' OR description LIKE '%배당%')
+                        )
+                    )
                     AND 
                     transaction_date BETWEEN ? AND ?
                     AND (CASE
@@ -258,9 +342,21 @@ module.exports = {
                 FROM 
                     trade_history_stock_domestic
                 WHERE 
-                    (
-                        (? = '매매' AND (t_type LIKE '%매수%' OR t_type LIKE '%매도%')) 
-                        OR t_type LIKE ?
+                    ( 
+                        (
+                            ? != '배당' 
+                            AND t_type NOT LIKE '%배당%'
+                            AND (
+                                (? = '매매' AND (t_type LIKE '%매수%' OR t_type LIKE '%매도%')) 
+                                OR (? = '입출금' AND (t_type LIKE '%입금%' OR t_type LIKE '%출금%')) 
+                                OR t_type LIKE ?
+                            )
+                        )
+                        OR 
+                        (
+                            ? = '배당' 
+                            AND t_type LIKE '%배당%'
+                        )
                     )
                     AND 
                     t_date BETWEEN ? AND ? 
@@ -274,9 +370,21 @@ module.exports = {
                 FROM 
                     trade_history_crypto
                 WHERE
-                    (
-                        (? = '매매' AND (trade_type LIKE '%매수%' OR trade_type LIKE '%매도%')) 
-                        OR trade_type LIKE ?
+                    ( 
+                        (
+                            ? != '배당' 
+                            AND trade_type NOT LIKE '%배당%'
+                            AND (
+                                (? = '매매' AND (trade_type LIKE '%매수%' OR trade_type LIKE '%매도%')) 
+                                OR (? = '입출금' AND (trade_type LIKE '%입금%' OR trade_type LIKE '%출금%')) 
+                                OR trade_type LIKE ?
+                            )
+                        )
+                        OR 
+                        (
+                            ? = '배당' 
+                            AND trade_type LIKE '%배당%'
+                        )
                     )
                     AND 
                     trade_date BETWEEN ? AND ? 

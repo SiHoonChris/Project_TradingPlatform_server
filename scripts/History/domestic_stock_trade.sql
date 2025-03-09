@@ -51,7 +51,7 @@ FROM
    ) dividend;
 
 
--- TOTAL LINES : 1755
+-- TOTAL LINES : 1756
 
 /* 2013 - 31 datas */
 INSERT INTO trade_history_stock_domestic (t_date, stock_name, t_type, t_quant, t_unit_price, t_amount, commission, tran_agri_tax, inc_resid_tax, settl_amount, outstd_amount_ocur, outstd_paym, delq_paym, deposit, sec_bal, loan_repay_amount, crd_loan_intrst, loan_date, repay_fund, t_channel, process_t) VALUES (STR_TO_DATE('1/8/13', '%m/%d/%y'), null, '이체입금', 0, 0, 300000, 0, 0, 0, 300000, 0, 0, 0, 300000, 0, 0, 0, null, 0, '홈페이지', '13:21:31');
@@ -1818,6 +1818,7 @@ INSERT INTO trade_history_stock_domestic (t_date, stock_name, t_type, t_quant, t
 INSERT INTO trade_history_stock_domestic (t_date, stock_name, t_type, t_quant, t_unit_price, t_amount, commission, tran_agri_tax, inc_resid_tax, settl_amount, outstd_amount_ocur, outstd_paym, delq_paym, deposit, sec_bal, loan_repay_amount, crd_loan_intrst, loan_date, repay_fund, t_channel, process_t) VALUES (STR_TO_DATE('11/15/24', '%m/%d/%y'), null, ' 이체출금', 0, 0, 3978956, 0, 0, 0, 3978956, 0, 0, 0, 0, 0, 0, 0, null, 0, '영웅문S#', '10:02:39');
 INSERT INTO trade_history_stock_domestic (t_date, stock_name, t_type, t_quant, t_unit_price, t_amount, commission, tran_agri_tax, inc_resid_tax, settl_amount, outstd_amount_ocur, outstd_paym, delq_paym, deposit, sec_bal, loan_repay_amount, crd_loan_intrst, loan_date, repay_fund, t_channel, process_t) VALUES (STR_TO_DATE('11/22/24', '%m/%d/%y'), null, ' 이체입금', 0, 0, 2803320, 0, 0, 0, 2803320, 0, 0, 0, 2803320, 0, 0, 0, null, 0, '영웅문S#', '19:11:58');
 INSERT INTO trade_history_stock_domestic (t_date, stock_name, t_type, t_quant, t_unit_price, t_amount, commission, tran_agri_tax, inc_resid_tax, settl_amount, outstd_amount_ocur, outstd_paym, delq_paym, deposit, sec_bal, loan_repay_amount, crd_loan_intrst, loan_date, repay_fund, t_channel, process_t) VALUES (STR_TO_DATE('12/24/24', '%m/%d/%y'), null, ' 이체입금', 0, 0, 1000000, 0, 0, 0, 1000000, 0, 0, 0, 3803320, 0, 0, 0, null, 0, '영웅문S#', '13:23:35');
-/* 2025 - 2 datas */
+/* 2025 - 3 datas */
 INSERT INTO trade_history_stock_domestic (t_date, stock_name, t_type, t_quant, t_unit_price, t_amount, commission, tran_agri_tax, inc_resid_tax, settl_amount, outstd_amount_ocur, outstd_paym, delq_paym, deposit, sec_bal, loan_repay_amount, crd_loan_intrst, loan_date, repay_fund, t_channel, process_t) VALUES (STR_TO_DATE('1/1/25', '%m/%d/%y'), null, ' 이체출금', 0, 0, 2000000, 0, 0, 0, 2000000, 0, 0, 0, 1803320, 0, 0, 0, null, 0, '영웅문S#', '13:03:39');
 INSERT INTO trade_history_stock_domestic (t_date, stock_name, t_type, t_quant, t_unit_price, t_amount, commission, tran_agri_tax, inc_resid_tax, settl_amount, outstd_amount_ocur, outstd_paym, delq_paym, deposit, sec_bal, loan_repay_amount, crd_loan_intrst, loan_date, repay_fund, t_channel, process_t) VALUES (STR_TO_DATE('1/12/25', '%m/%d/%y'), null, ' 예탁금이용료(이자)입금', 0, 0, 6221, 0, 0, 950, 5271, 0, 0, 0, 1808591, 0, 0, 0, null, 0, '지점', '2:07:58');
+INSERT INTO trade_history_stock_domestic (t_date, stock_name, t_type, t_quant, t_unit_price, t_amount, commission, tran_agri_tax, inc_resid_tax, settl_amount, outstd_amount_ocur, outstd_paym, delq_paym, deposit, sec_bal, loan_repay_amount, crd_loan_intrst, loan_date, repay_fund, t_channel, process_t) VALUES (STR_TO_DATE('1/24/25', '%m/%d/%y'), null, ' 이체입금', 0, 0, 1000000, 0, 0, 0, 1000000, 0, 0, 0, 2808591, 0, 0, 0, null, 0, '영웅문S#', '17:48:50');
