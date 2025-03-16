@@ -391,5 +391,144 @@ module.exports = {
                     AND 
                     fee BETWEEN ? AND ?
             ) expense`
+      },
+  getTransactionHistoryDataForDetailFrequencyChart: 
+      { query:
+            `SELECT 
+	            ( SELECT count(*) FROM trade_history_stock_foreign 
+                  WHERE description like '%매수%' 
+                        and 
+                            case
+                                when currency = 'USD' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200) between ? and ?
+                                when currency = 'CNY' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200) between ? and ?
+                                when currency = 'HKD' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180) between ? and ?
+                                when currency = 'SGD' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900) between ? and ?
+                                else 
+                                    (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) between ? and ?
+                            end
+                        and transaction_date between ? and ? 
+                ) + 
+                ( SELECT count(*) FROM trade_history_stock_domestic 
+                  WHERE t_type like '%매수%' 
+                        and (commission + tran_agri_tax + inc_resid_tax) between ? and ?
+                        and t_date between ? and ?
+                ) + 
+                ( SELECT count(*) FROM trade_history_crypto 
+                  WHERE trade_type like '%매수%' 
+                        and fee BETWEEN ? AND ?
+                        and trade_date between ? and ?
+                ) as '매수',
+                ( SELECT count(*) FROM trade_history_stock_foreign 
+                  WHERE description like '%매도%' 
+                        and 
+                            case
+                                when currency = 'USD' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200) between ? and ?
+                                when currency = 'CNY' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200) between ? and ?
+                                when currency = 'HKD' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180) between ? and ?
+                                when currency = 'SGD' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900) between ? and ?
+                                else 
+                                    (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) between ? and ?
+                            end
+                        and transaction_date between ? and ?
+                ) + 
+                ( SELECT count(*) FROM trade_history_stock_domestic 
+                  WHERE t_type like '%매도%' 
+                        and (commission + tran_agri_tax + inc_resid_tax) between ? and ?
+                        and t_date between ? and ?
+                ) + 
+                ( SELECT count(*) FROM trade_history_crypto 
+                  WHERE trade_type like '%매도%' 
+                        and fee BETWEEN ? AND ?
+                        and trade_date between ? and ?
+                ) as '매도',
+                ( SELECT count(*) FROM trade_history_stock_foreign 
+                  WHERE description like '%입금%' 
+                        and 
+                            case
+                                when currency = 'USD' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200) between ? and ?
+                                when currency = 'CNY' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200) between ? and ?
+                                when currency = 'HKD' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180) between ? and ?
+                                when currency = 'SGD' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900) between ? and ?
+                                else 
+                                    (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) between ? and ?
+                            end
+                        and transaction_date between ? and ?
+                ) + 
+                ( SELECT count(*) FROM trade_history_stock_domestic 
+                  WHERE t_type like '%입금%' 
+                        and (commission + tran_agri_tax + inc_resid_tax) between ? and ?
+                        and t_date between ? and ?
+                ) + 
+                ( SELECT count(*) FROM trade_history_crypto 
+                  WHERE trade_type like '%입금%' 
+                        and fee BETWEEN ? AND ?
+                        and trade_date between ? and ?
+                ) as '입금',
+                ( SELECT count(*) FROM trade_history_stock_foreign 
+                  WHERE description like '%출금%' 
+                        and 
+                            case
+                                when currency = 'USD' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200) between ? and ?
+                                when currency = 'CNY' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200) between ? and ?
+                                when currency = 'HKD' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180) between ? and ?
+                                when currency = 'SGD' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900) between ? and ?
+                                else 
+                                    (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) between ? and ?
+                            end
+                        and transaction_date between ? and ?
+                ) + 
+                ( SELECT count(*) FROM trade_history_stock_domestic 
+                  WHERE t_type like '%출금%' 
+                        and (commission + tran_agri_tax + inc_resid_tax) between ? and ?
+                        and t_date between ? and ?
+                ) + 
+                ( SELECT count(*) FROM trade_history_crypto 
+                  WHERE trade_type like '%출금%' 
+                        and fee BETWEEN ? AND ?
+                        and trade_date between ? and ?
+                ) as '출금',
+                ( SELECT count(*) FROM trade_history_stock_foreign 
+                  WHERE description like '%배당%' 
+                        and 
+                            case
+                                when currency = 'USD' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200) between ? and ?
+                                when currency = 'CNY' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200) between ? and ?
+                                when currency = 'HKD' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180) between ? and ?
+                                when currency = 'SGD' 
+                                    then ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900) between ? and ?
+                                else 
+                                    (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) between ? and ?
+                            end
+                        and transaction_date between ? and ?
+                ) + 
+                ( SELECT count(*) FROM trade_history_stock_domestic 
+                  WHERE t_type like '%배당%' 
+                        and (commission + tran_agri_tax + inc_resid_tax) between ? and ?
+                        and t_date between ? and ?
+                ) + 
+                ( SELECT count(*) FROM trade_history_crypto 
+                  WHERE trade_type like '%배당%' 
+                        and fee BETWEEN ? AND ?
+                        and trade_date between ? and ?
+                )as '배당' `
       }
 }
