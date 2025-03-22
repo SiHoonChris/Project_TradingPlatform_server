@@ -450,7 +450,7 @@ module.exports = {
                         and trade_date between ? and ?
                 ) as '매도',
                 ( SELECT count(*) FROM trade_history_stock_foreign 
-                  WHERE description like '%입금%' 
+                  WHERE description like '%입금%' and description NOT LIKE '%배당%'
                         and 
                             case
                                 when currency = 'USD' 
@@ -467,17 +467,17 @@ module.exports = {
                         and transaction_date between ? and ?
                 ) + 
                 ( SELECT count(*) FROM trade_history_stock_domestic 
-                  WHERE t_type like '%입금%' 
+                  WHERE t_type like '%입금%' and t_type NOT LIKE '%배당%'
                         and (commission + tran_agri_tax + inc_resid_tax) between ? and ?
                         and t_date between ? and ?
                 ) + 
                 ( SELECT count(*) FROM trade_history_crypto 
-                  WHERE trade_type like '%입금%' 
+                  WHERE trade_type like '%입금%' and trade_type NOT LIKE '%배당%'
                         and fee BETWEEN ? AND ?
                         and trade_date between ? and ?
                 ) as '입금',
                 ( SELECT count(*) FROM trade_history_stock_foreign 
-                  WHERE description like '%출금%' 
+                  WHERE description LIKE '%출금%' and description NOT LIKE '%배당%'
                         and 
                             case
                                 when currency = 'USD' 
@@ -494,12 +494,12 @@ module.exports = {
                         and transaction_date between ? and ?
                 ) + 
                 ( SELECT count(*) FROM trade_history_stock_domestic 
-                  WHERE t_type like '%출금%' 
+                  WHERE t_type LIKE '%출금%' and t_type NOT LIKE '%배당%'
                         and (commission + tran_agri_tax + inc_resid_tax) between ? and ?
                         and t_date between ? and ?
                 ) + 
                 ( SELECT count(*) FROM trade_history_crypto 
-                  WHERE trade_type like '%출금%' 
+                  WHERE trade_type LIKE '%출금%' and trade_type NOT LIKE '%배당%'
                         and fee BETWEEN ? AND ?
                         and trade_date between ? and ?
                 ) as '출금',
