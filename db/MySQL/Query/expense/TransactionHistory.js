@@ -71,15 +71,15 @@ module.exports = {
                     trade_history_stock_foreign
                 WHERE 
                     total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0
-                    AND 
-                    (
-                        (
-                            ? != '배당' 
+                    AND (
+                        (? != '배당' 
                             AND (transaction_type NOT LIKE '%배당%' AND description NOT LIKE '%배당%')
-                            AND (transaction_type LIKE ? OR description LIKE ?)
-                        )
-                        OR 
-                        (
+                            AND (
+                                (? = '출금' AND (transaction_type LIKE ? AND description LIKE ?)) 
+                                OR 
+                                (? != '출금' AND (transaction_type LIKE ? OR description LIKE ?))
+                            )
+                        ) OR (
                             ? = '배당' 
                             AND (transaction_type LIKE '%배당%' OR description LIKE '%배당%')
                         )
@@ -188,13 +188,14 @@ module.exports = {
                     trade_history_stock_foreign
                 WHERE 
                     (
-                        (
-                            ? != '배당' 
+                        (? != '배당' 
                             AND (transaction_type NOT LIKE '%배당%' AND description NOT LIKE '%배당%')
-                            AND (transaction_type LIKE ? OR description LIKE ?)
-                        )
-                        OR 
-                        (
+                            AND (
+                                (? = '출금' AND (transaction_type LIKE ? AND description LIKE ?)) 
+                                OR 
+                                (? != '출금' AND (transaction_type LIKE ? OR description LIKE ?))
+                            )
+                        ) OR (
                             ? = '배당' 
                             AND (transaction_type LIKE '%배당%' OR description LIKE '%배당%')
                         )
@@ -312,21 +313,21 @@ module.exports = {
                     end as Expense
                 FROM 
                     trade_history_stock_foreign
-                WHERE  
+                WHERE 
                     (
-                        (
-                            ? != '배당' 
+                        (? != '배당' 
                             AND (transaction_type NOT LIKE '%배당%' AND description NOT LIKE '%배당%')
-                            AND (transaction_type LIKE ? OR description LIKE ?)
-                        )
-                        OR 
-                        (
+                            AND (
+                                (? = '출금' AND (transaction_type LIKE ? AND description LIKE ?)) 
+                                OR 
+                                (? != '출금' AND (transaction_type LIKE ? OR description LIKE ?))
+                            )
+                        ) OR (
                             ? = '배당' 
                             AND (transaction_type LIKE '%배당%' OR description LIKE '%배당%')
                         )
                     )
-                    AND 
-                    transaction_date BETWEEN ? AND ?
+                    AND transaction_date BETWEEN ? AND ?
                     AND (CASE
                         WHEN currency = 'USD' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
                         WHEN currency = 'CNY' THEN (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200

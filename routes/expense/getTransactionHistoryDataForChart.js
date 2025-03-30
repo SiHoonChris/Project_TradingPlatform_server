@@ -14,7 +14,7 @@ router.get('/', function(req, res) {
   CONN.query(
     Query['getTransactionHistoryDataForChart'].query, 
     [
-      tTypeOrg, tType, tType, tTypeOrg,
+      tTypeOrg, tTypeOrg, tType, tType, tTypeOrg, tType, tType, tTypeOrg, 
       tTypeOrg, tTypeOrg, tTypeOrg, tType, tTypeOrg,
       tTypeOrg, tTypeOrg, tTypeOrg, tType, tTypeOrg,
       dFrom, dTo

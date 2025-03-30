@@ -24,7 +24,7 @@ router.get('/', async function (req, res) {
       CONN.query(
         Query['getTransactionHistoryDataForTable'].query,
         [
-          tTypeOrg, tType, tType, tTypeOrg, eMin, eMax, 
+          tTypeOrg, tTypeOrg, tType, tType, tTypeOrg, tType, tType, tTypeOrg, eMin, eMax, 
           tTypeOrg, tTypeOrg, tTypeOrg, tType, tTypeOrg, eMin, eMax,
           tTypeOrg, tTypeOrg, tTypeOrg, tType, tTypeOrg, eMin, eMax,
           dFrom, dTo
@@ -41,7 +41,7 @@ router.get('/', async function (req, res) {
       CONN.query(
         Query['getExpenseSumForTable'].query,
         [ 
-          tTypeOrg, tType, tType, tTypeOrg, dFrom, dTo, eMin, eMax, 
+          tTypeOrg, tTypeOrg, tType, tType, tTypeOrg, tType, tType, tTypeOrg, dFrom, dTo, eMin, eMax, 
           tTypeOrg, tTypeOrg, tTypeOrg, tType, tTypeOrg, dFrom, dTo, eMin, eMax, 
           tTypeOrg, tTypeOrg, tTypeOrg, tType, tTypeOrg, dFrom, dTo, eMin, eMax
         ],
