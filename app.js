@@ -16,6 +16,7 @@ var TransactionTypeList = require('./routes/expense/getTransactionTypeList') // 
 var TransactionHistoryDataForChart = require('./routes/expense/getTransactionHistoryDataForChart'); // Scatterplot Chart
 var TransactionHistoryDataForTable = require('./routes/expense/getTransactionHistoryDataForTable'); // Table (Bottom-Left)
 var TransactionHistoryDataForDetailFrequencyChart = require('./routes/expense/getTransactionHistoryDataForDetailFrequencyChart'); // Table (Bottom-Right, Left)
+var TransactionHistoryDataForDetailAmountChart = require('./routes/expense/getTransactionHistoryDataForDetailAmountChart'); // Table (Bottom-Right, Right)
 
 
 /* 아래는 수정 필요 */
@@ -62,6 +63,7 @@ app.use('/getTransactionTypeList', TransactionTypeList); // Transaction Tyep Lis
 app.use('/getTransactionHistoryDataForChart', TransactionHistoryDataForChart); // Scatterplot Chart
 app.use('/getTransactionHistoryDataForTable', TransactionHistoryDataForTable); // Table (Bottom-Left)
 app.use('/getTransactionHistoryDataForDetailFrequencyChart', TransactionHistoryDataForDetailFrequencyChart); // Table (Bottom-Right, Left)
+app.use('/getTransactionHistoryDataForDetailAmountChart', TransactionHistoryDataForDetailAmountChart); // Table (Bottom-Right, Right)
 
 
 /* 아래는 수정 필요 */

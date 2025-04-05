@@ -570,5 +570,248 @@ module.exports = {
                         and fee > 0
                         and trade_date between ? and ?
                 )as '배당' `
+      }, 
+  getTransactionHistoryDataForDetailAmountChart: 
+      { query:
+            `SELECT 
+	            ( SELECT SUM(
+                         case
+		                    when currency = 'USD' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
+		                    when currency = 'CNY' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200
+		                    when currency = 'HKD' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180
+		                    when currency = 'SGD' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
+		                    else 
+			                    total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount
+	                    end) 
+                  FROM trade_history_stock_foreign 
+                  WHERE description like '%매수%' 
+                        and 
+                            case
+                                when currency = 'USD' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                when currency = 'CNY' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                when currency = 'HKD' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                when currency = 'SGD' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                else 
+                                    ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) between ? and ?)
+                                    and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                            end
+                        and transaction_date between ? and ? 
+                ) + 
+                ( SELECT SUM(commission + tran_agri_tax + inc_resid_tax) FROM trade_history_stock_domestic 
+                  WHERE t_type like '%매수%' 
+                        and (commission + tran_agri_tax + inc_resid_tax) between ? and ?
+                        and (commission + tran_agri_tax + inc_resid_tax) > 0
+                        and t_date between ? and ?
+                ) + 
+                ( SELECT SUM(fee) FROM trade_history_crypto 
+                  WHERE trade_type like '%매수%' 
+                        and fee BETWEEN ? AND ?
+                        and fee > 0
+                        and trade_date between ? and ?
+                ) as '매수',
+
+ 	            ( SELECT SUM(
+                         case
+		                    when currency = 'USD' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
+		                    when currency = 'CNY' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200
+		                    when currency = 'HKD' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180
+		                    when currency = 'SGD' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
+		                    else 
+			                    total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount
+	                    end) 
+                  FROM trade_history_stock_foreign 
+                  WHERE description like '%매도%' 
+                        and 
+                            case
+                                when currency = 'USD' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                when currency = 'CNY' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                when currency = 'HKD' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                when currency = 'SGD' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                else 
+                                    ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) between ? and ?)
+                                    and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                            end
+                        and transaction_date between ? and ?
+                ) + 
+                ( SELECT SUM(commission + tran_agri_tax + inc_resid_tax) FROM trade_history_stock_domestic 
+                  WHERE t_type like '%매도%' 
+                        and (commission + tran_agri_tax + inc_resid_tax) between ? and ?
+                        and (commission + tran_agri_tax + inc_resid_tax) > 0
+                        and t_date between ? and ?
+                ) + 
+                ( SELECT SUM(fee) FROM trade_history_crypto 
+                  WHERE trade_type like '%매도%' 
+                        and fee BETWEEN ? AND ?
+                        and fee > 0
+                        and trade_date between ? and ?
+                ) as '매도',
+                 
+	            ( SELECT SUM(
+                         case
+		                    when currency = 'USD' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
+		                    when currency = 'CNY' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200
+		                    when currency = 'HKD' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180
+		                    when currency = 'SGD' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
+		                    else 
+			                    total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount
+	                    end) 
+                  FROM trade_history_stock_foreign 
+                  WHERE description like '%입금%' and description NOT LIKE '%배당%'
+                        and 
+                            case
+                                when currency = 'USD' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                when currency = 'CNY' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                when currency = 'HKD' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                when currency = 'SGD' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                else 
+                                    ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) between ? and ?)
+                                    and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                            end
+                        and transaction_date between ? and ?
+                ) + 
+                ( SELECT SUM(commission + tran_agri_tax + inc_resid_tax) FROM trade_history_stock_domestic 
+                  WHERE t_type like '%입금%' and t_type NOT LIKE '%배당%'
+                        and (commission + tran_agri_tax + inc_resid_tax) between ? and ?
+                        and (commission + tran_agri_tax + inc_resid_tax) > 0
+                        and t_date between ? and ?
+                ) + 
+                ( SELECT SUM(fee) FROM trade_history_crypto 
+                  WHERE trade_type like '%입금%' and trade_type NOT LIKE '%배당%'
+                        and fee BETWEEN ? AND ?
+                        and fee > 0
+                        and trade_date between ? and ?
+                ) as '입금',
+
+	            ( SELECT SUM(
+                         case
+		                    when currency = 'USD' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
+		                    when currency = 'CNY' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200
+		                    when currency = 'HKD' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180
+		                    when currency = 'SGD' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
+		                    else 
+			                    total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount
+	                    end) 
+                  FROM trade_history_stock_foreign 
+                  WHERE description LIKE '%출금%' and description NOT LIKE '%배당%'
+                        and 
+                            case
+                                when currency = 'USD' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                when currency = 'CNY' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                when currency = 'HKD' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                when currency = 'SGD' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                else 
+                                    ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) between ? and ?)
+                                    and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                            end
+                        and transaction_date between ? and ?
+                ) + 
+                ( SELECT SUM(commission + tran_agri_tax + inc_resid_tax) FROM trade_history_stock_domestic 
+                  WHERE t_type LIKE '%출금%' and t_type NOT LIKE '%배당%'
+                        and (commission + tran_agri_tax + inc_resid_tax) between ? and ?
+                        and (commission + tran_agri_tax + inc_resid_tax) > 0
+                        and t_date between ? and ?
+                ) + 
+                ( SELECT SUM(fee) FROM trade_history_crypto 
+                  WHERE trade_type LIKE '%출금%' and trade_type NOT LIKE '%배당%'
+                        and fee BETWEEN ? AND ?
+                        and fee > 0
+                        and trade_date between ? and ?
+                ) as '출금',
+
+	            ( SELECT SUM(
+                         case
+		                    when currency = 'USD' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
+		                    when currency = 'CNY' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200
+		                    when currency = 'HKD' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180
+		                    when currency = 'SGD' 
+			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
+		                    else 
+			                    total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount
+	                    end) 
+                  FROM trade_history_stock_foreign 
+                  WHERE description like '%배당%' 
+                        and 
+                            case
+                                when currency = 'USD' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                when currency = 'CNY' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 200) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                when currency = 'HKD' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 180) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                when currency = 'SGD' 
+                                    then (((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900) between ? and ?)
+                                          and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                                else 
+                                    ((total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) between ? and ?)
+                                    and (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0)
+                            end
+                        and transaction_date between ? and ?
+                ) + 
+                ( SELECT SUM(commission + tran_agri_tax + inc_resid_tax) FROM trade_history_stock_domestic 
+                  WHERE t_type like '%배당%' 
+                        and (commission + tran_agri_tax + inc_resid_tax) between ? and ?
+                        and (commission + tran_agri_tax + inc_resid_tax) > 0
+                        and t_date between ? and ?
+                ) + 
+                ( SELECT SUM(fee) FROM trade_history_crypto 
+                  WHERE trade_type like '%배당%' 
+                        and fee BETWEEN ? AND ?
+                        and fee > 0
+                        and trade_date between ? and ?
+                )as '배당' `
       }
 }
