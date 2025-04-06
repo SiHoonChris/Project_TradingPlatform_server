@@ -574,7 +574,9 @@ module.exports = {
   getTransactionHistoryDataForDetailAmountChart: 
       { query:
             `SELECT 
-	            ( SELECT SUM(
+	            ( SELECT 
+                    IFNULL(
+                        SUM(
                          case
 		                    when currency = 'USD' 
 			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
@@ -586,7 +588,8 @@ module.exports = {
 			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
 		                    else 
 			                    total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount
-	                    end) 
+	                    end), 0
+                    )
                   FROM trade_history_stock_foreign 
                   WHERE description like '%매수%' 
                         and 
@@ -609,20 +612,22 @@ module.exports = {
                             end
                         and transaction_date between ? and ? 
                 ) + 
-                ( SELECT SUM(commission + tran_agri_tax + inc_resid_tax) FROM trade_history_stock_domestic 
+                ( SELECT IFNULL(SUM(commission + tran_agri_tax + inc_resid_tax), 0) FROM trade_history_stock_domestic 
                   WHERE t_type like '%매수%' 
                         and (commission + tran_agri_tax + inc_resid_tax) between ? and ?
                         and (commission + tran_agri_tax + inc_resid_tax) > 0
                         and t_date between ? and ?
                 ) + 
-                ( SELECT SUM(fee) FROM trade_history_crypto 
+                ( SELECT IFNULL(SUM(fee), 0) FROM trade_history_crypto 
                   WHERE trade_type like '%매수%' 
                         and fee BETWEEN ? AND ?
                         and fee > 0
                         and trade_date between ? and ?
                 ) as '매수',
 
- 	            ( SELECT SUM(
+	            ( SELECT 
+                    IFNULL(
+                        SUM(
                          case
 		                    when currency = 'USD' 
 			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
@@ -634,7 +639,8 @@ module.exports = {
 			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
 		                    else 
 			                    total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount
-	                    end) 
+	                    end), 0
+                    )
                   FROM trade_history_stock_foreign 
                   WHERE description like '%매도%' 
                         and 
@@ -657,20 +663,22 @@ module.exports = {
                             end
                         and transaction_date between ? and ?
                 ) + 
-                ( SELECT SUM(commission + tran_agri_tax + inc_resid_tax) FROM trade_history_stock_domestic 
+                ( SELECT IFNULL(SUM(commission + tran_agri_tax + inc_resid_tax), 0) FROM trade_history_stock_domestic 
                   WHERE t_type like '%매도%' 
                         and (commission + tran_agri_tax + inc_resid_tax) between ? and ?
                         and (commission + tran_agri_tax + inc_resid_tax) > 0
                         and t_date between ? and ?
                 ) + 
-                ( SELECT SUM(fee) FROM trade_history_crypto 
+                ( SELECT IFNULL(SUM(fee), 0) FROM trade_history_crypto 
                   WHERE trade_type like '%매도%' 
                         and fee BETWEEN ? AND ?
                         and fee > 0
                         and trade_date between ? and ?
                 ) as '매도',
                  
-	            ( SELECT SUM(
+	            ( SELECT 
+                    IFNULL(
+                        SUM(
                          case
 		                    when currency = 'USD' 
 			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
@@ -682,7 +690,8 @@ module.exports = {
 			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
 		                    else 
 			                    total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount
-	                    end) 
+	                    end), 0
+                    )
                   FROM trade_history_stock_foreign 
                   WHERE description like '%입금%' and description NOT LIKE '%배당%'
                         and 
@@ -705,20 +714,22 @@ module.exports = {
                             end
                         and transaction_date between ? and ?
                 ) + 
-                ( SELECT SUM(commission + tran_agri_tax + inc_resid_tax) FROM trade_history_stock_domestic 
+                ( SELECT IFNULL(SUM(commission + tran_agri_tax + inc_resid_tax), 0) FROM trade_history_stock_domestic 
                   WHERE t_type like '%입금%' and t_type NOT LIKE '%배당%'
                         and (commission + tran_agri_tax + inc_resid_tax) between ? and ?
                         and (commission + tran_agri_tax + inc_resid_tax) > 0
                         and t_date between ? and ?
                 ) + 
-                ( SELECT SUM(fee) FROM trade_history_crypto 
+                ( SELECT IFNULL(SUM(fee), 0) FROM trade_history_crypto 
                   WHERE trade_type like '%입금%' and trade_type NOT LIKE '%배당%'
                         and fee BETWEEN ? AND ?
                         and fee > 0
                         and trade_date between ? and ?
                 ) as '입금',
 
-	            ( SELECT SUM(
+	            ( SELECT 
+                    IFNULL(
+                        SUM(
                          case
 		                    when currency = 'USD' 
 			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
@@ -730,7 +741,8 @@ module.exports = {
 			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
 		                    else 
 			                    total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount
-	                    end) 
+	                    end), 0
+                    )
                   FROM trade_history_stock_foreign 
                   WHERE description LIKE '%출금%' and description NOT LIKE '%배당%'
                         and 
@@ -753,20 +765,22 @@ module.exports = {
                             end
                         and transaction_date between ? and ?
                 ) + 
-                ( SELECT SUM(commission + tran_agri_tax + inc_resid_tax) FROM trade_history_stock_domestic 
+                ( SELECT IFNULL(SUM(commission + tran_agri_tax + inc_resid_tax), 0) FROM trade_history_stock_domestic 
                   WHERE t_type LIKE '%출금%' and t_type NOT LIKE '%배당%'
                         and (commission + tran_agri_tax + inc_resid_tax) between ? and ?
                         and (commission + tran_agri_tax + inc_resid_tax) > 0
                         and t_date between ? and ?
                 ) + 
-                ( SELECT SUM(fee) FROM trade_history_crypto 
+                ( SELECT IFNULL(SUM(fee), 0) FROM trade_history_crypto 
                   WHERE trade_type LIKE '%출금%' and trade_type NOT LIKE '%배당%'
                         and fee BETWEEN ? AND ?
                         and fee > 0
                         and trade_date between ? and ?
                 ) as '출금',
 
-	            ( SELECT SUM(
+	            ( SELECT 
+                    IFNULL(
+                        SUM(
                          case
 		                    when currency = 'USD' 
 			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 1200
@@ -778,7 +792,8 @@ module.exports = {
 			                    then (total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount) * 900
 		                    else 
 			                    total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount
-	                    end) 
+	                    end), 0
+                    )
                   FROM trade_history_stock_foreign 
                   WHERE description like '%배당%' 
                         and 
@@ -801,13 +816,13 @@ module.exports = {
                             end
                         and transaction_date between ? and ?
                 ) + 
-                ( SELECT SUM(commission + tran_agri_tax + inc_resid_tax) FROM trade_history_stock_domestic 
+                ( SELECT IFNULL(SUM(commission + tran_agri_tax + inc_resid_tax), 0) FROM trade_history_stock_domestic 
                   WHERE t_type like '%배당%' 
                         and (commission + tran_agri_tax + inc_resid_tax) between ? and ?
                         and (commission + tran_agri_tax + inc_resid_tax) > 0
                         and t_date between ? and ?
                 ) + 
-                ( SELECT SUM(fee) FROM trade_history_crypto 
+                ( SELECT IFNULL(SUM(fee), 0) FROM trade_history_crypto 
                   WHERE trade_type like '%배당%' 
                         and fee BETWEEN ? AND ?
                         and fee > 0
