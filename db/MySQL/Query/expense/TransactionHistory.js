@@ -72,7 +72,10 @@ module.exports = {
                 WHERE 
                     total_taxes + fees_foreign + stamp_tax + foreign_paid_tax_amount > 0
                     AND (
-                        (? != '배당' 
+                        (? = '' 
+                            AND (transaction_type LIKE '%%' AND description LIKE '%%')
+                        ) OR (
+                            ? NOT IN ('', '배당') 
                             AND (transaction_type NOT LIKE '%배당%' AND description NOT LIKE '%배당%')
                             AND (
                                 (? = '출금' AND (transaction_type LIKE ? AND description LIKE ?)) 
@@ -97,17 +100,17 @@ module.exports = {
                     commission + tran_agri_tax + inc_resid_tax > 0
                     AND 
                     ( 
-                        (
-                            ? != '배당' 
+                        (? = '' 
+                            AND t_type LIKE '%%'
+                        ) OR (
+                            ? NOT IN ('', '배당') 
                             AND t_type NOT LIKE '%배당%'
                             AND (
                                 (? = '매매' AND (t_type LIKE '%매수%' OR t_type LIKE '%매도%')) 
                                 OR (? = '입출금' AND (t_type LIKE '%입금%' OR t_type LIKE '%출금%')) 
                                 OR t_type LIKE ?
                             )
-                        )
-                        OR 
-                        (
+                        ) OR (
                             ? = '배당' 
                             AND t_type LIKE '%배당%'
                         )
@@ -188,7 +191,10 @@ module.exports = {
                     trade_history_stock_foreign
                 WHERE 
                     (
-                        (? != '배당' 
+                        (? = '' 
+                            AND (transaction_type LIKE '%%' AND description LIKE '%%')
+                        ) OR (
+                            ? NOT IN ('', '배당') 
                             AND (transaction_type NOT LIKE '%배당%' AND description NOT LIKE '%배당%')
                             AND (
                                 (? = '출금' AND (transaction_type LIKE ? AND description LIKE ?)) 
@@ -236,17 +242,17 @@ module.exports = {
                     trade_history_stock_domestic
                 WHERE 
                     ( 
-                        (
-                            ? != '배당' 
+                        (? = '' 
+                            AND t_type LIKE '%%' 
+                        ) OR (
+                            ? NOT IN ('', '배당') 
                             AND t_type NOT LIKE '%배당%'
                             AND (
                                 (? = '매매' AND (t_type LIKE '%매수%' OR t_type LIKE '%매도%')) 
                                 OR (? = '입출금' AND (t_type LIKE '%입금%' OR t_type LIKE '%출금%')) 
                                 OR t_type LIKE ?
                             )
-                        )
-                        OR 
-                        (
+                        ) OR (
                             ? = '배당' 
                             AND t_type LIKE '%배당%'
                         )
@@ -315,7 +321,10 @@ module.exports = {
                     trade_history_stock_foreign
                 WHERE 
                     (
-                        (? != '배당' 
+                        (? = '' 
+                            AND (transaction_type LIKE '%%' AND description LIKE '%%')
+                        ) OR (
+                            ? NOT IN ('', '배당') 
                             AND (transaction_type NOT LIKE '%배당%' AND description NOT LIKE '%배당%')
                             AND (
                                 (? = '출금' AND (transaction_type LIKE ? AND description LIKE ?)) 
@@ -344,17 +353,17 @@ module.exports = {
                     trade_history_stock_domestic
                 WHERE 
                     ( 
-                        (
-                            ? != '배당' 
+                        (? = '' 
+                            AND t_type LIKE '%%' 
+                        ) OR (
+                            ? NOT IN ('', '배당') 
                             AND t_type NOT LIKE '%배당%'
                             AND (
                                 (? = '매매' AND (t_type LIKE '%매수%' OR t_type LIKE '%매도%')) 
                                 OR (? = '입출금' AND (t_type LIKE '%입금%' OR t_type LIKE '%출금%')) 
                                 OR t_type LIKE ?
                             )
-                        )
-                        OR 
-                        (
+                        ) OR (
                             ? = '배당' 
                             AND t_type LIKE '%배당%'
                         )
