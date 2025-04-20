@@ -28,12 +28,6 @@ var BSdataPerMonth = require('./routes/financial-statements/balance-sheets/getBS
 var ISdataPerYear = require('./routes/financial-statements/income-statements/getISdataPerYear');
 var ISdataPerQuarter = require('./routes/financial-statements/income-statements/getISdataPerQuarter');
 var ISdataPerMonth = require('./routes/financial-statements/income-statements/getISdataPerMonth');
-// Portfolios 포트폴리오를 새롭게 만들거나 수정하는 작업은 없을 것. 아래 코드 삭제 필요
-var PortfolioData = require('./routes/portfolio/getPortfolioData');
-var RemovePortfolio = require('./routes/portfolio/removePortfolio');
-var GetClosePriceData = require('./routes/portfolio/getClosePriceData');
-var GetClosePriceDataForEval = require('./routes/portfolio/getClosePriceDataForEval');
-var MakeNewPortfolio = require('./routes/portfolio/makeNewPortfolio');
 // Trade
 var HistoricalPriceData = require('./routes/trade/getHistoricalPriceData');
 
@@ -75,16 +69,6 @@ app.use('/balance-sheets/per-month', BSdataPerMonth);
 app.use('/income-statements/per-year', ISdataPerYear);
 app.use('/income-statements/per-quarter', ISdataPerQuarter);
 app.use('/income-statements/per-month', ISdataPerMonth);
-// Portfolio Datas
-app.use('/portfolio/getPortfolioData', PortfolioData);
-// Remove Portfolios
-app.use('/portfolio/removePortfolios', RemovePortfolio);
-// Get The Latest Close-Price of Assets, for Adding New Asset In New Portfolio
-app.use('/portfolio/addAsset', GetClosePriceData);
-// Get The Latest Close-Prices of Assets, for Evaluating Portfolio's current rate of return
-app.use('/portfolio/getCurrentPrices', GetClosePriceDataForEval);
-// Make New Portfolio
-app.use('/portfolio/makeNewPortfolio', MakeNewPortfolio);
 // get Historical Price Data
 app.use('/trade/getHistoricalPriceData', HistoricalPriceData);
 
